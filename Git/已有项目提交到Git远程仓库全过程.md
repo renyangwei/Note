@@ -11,6 +11,8 @@ sudo apt-get install git
 - 安装homebrew，然后通过homebrew安装Git，具体方法请参考homebrew的文档：[http://brew.sh/](http://brew.sh/)
 ## 3. 在Windows上安装Git
 可以从Git官网直接[下载安装程序](https://git-scm.com/downloads)
+
+## 4. 全局配置
 安装完成后，还需要最后一步设置，在命令行输入：
 ```
 $ git config --global user.name "Name"
