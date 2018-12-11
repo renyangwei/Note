@@ -91,3 +91,4 @@ git pull --allow-unrelated-histories <origin> <master>
 git config --global credential.helper store
 ````
 以后再也不用输入密码了，多么方便。
+亲测并没有什么用-_-
