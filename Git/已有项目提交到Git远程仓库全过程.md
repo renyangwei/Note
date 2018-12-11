@@ -85,3 +85,9 @@ git pull <remote> <master>
 git pull --allow-unrelated-histories <origin> <master>
 ```
 合并后再上传到远程仓库
+
+4. 还有一种保存账号密码的方法,执行
+```
+git config --global credential.helper store
+````
+以后再也不用输入密码了，多么方便。
