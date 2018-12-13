@@ -2,6 +2,6 @@
 
 执行下面的命令
 
-    go build -ldflags "-H=windowsgui"
+`go build -ldflags "-H=windowsgui"`
 
 Just Do It ！
