@@ -9,3 +9,7 @@
 5. 修改端口，点击**文件**>**首选项**>**设置**，搜索关键字**liveserver**一直往下找，我们可以找到live Server相关设置，liveServer.settings.port设置端口，liveServer.settings.proxy设置代理。
    
 就这么简单，over！
+
+## 发现问题
+
+- 预览Markdown项目的时候显示不了图片
