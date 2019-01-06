@@ -1,0 +1,40 @@
+# Python文件操作
+
+```python
+#!/usr/bin/env python3
+# 加上上面的注释能让py文件在Mac os和Linux系统上直接运行
+# ./test.py
+import os
+
+fileName = "hello.txt"
+
+# 介绍os.path模块的用法
+# os.path用于文件操作
+print(os.path.isdir(fileName))
+print(os.path.isfile(fileName))
+print(os.path.exists(fileName))
+print(os.path.getsize(fileName))
+print(os.getcwd())
+# 用于分离文件名和路径
+filePath = os.path.abspath(fileName)
+print(os.path.abspath("..")) #还可以用相对路径
+print(filePath)
+print(os.path.split(filePath))
+# 拼接路径和文件
+print(os.path.join(os.getcwd(), fileName))
+print(os.path.dirname(filePath))
+print(os.path.basename(filePath))
+# 分离后缀名
+print(os.path.splitext(filePath))
+print(os.path.splitext(fileName))
+# os.sep 常量是目录分割符，windows是\，Linux是/
+print(os.sep)
+# 列出当前目录的文件和目录
+print(os.listdir("."))
+
+# 介绍一个函数startfile
+# 就像双击一样打开文件,类似window中的start <fileName> 命令
+os.startfile(fileName)
+# 这里老是提示我找不到运行程序,无论用相对路径还是绝对路径
+# 还有以后再补充
+```
