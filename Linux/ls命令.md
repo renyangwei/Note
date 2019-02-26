@@ -54,7 +54,7 @@ drwxr-xr-x   3 renyangwei  staff   102  2 26 00:38 Windows
 drwxr-xr-x  11 renyangwei  staff   374  2 26 00:38 assets
 ```
 
-6.过滤列表输出
+6.过滤列表输出,后面接正则表达式
 
 ```bash
 $ls -l G*
