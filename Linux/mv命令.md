@@ -11,3 +11,7 @@
     mv [source] [dest]
 
 `dest`：文件
+
+3.移动文件夹
+
+    mv [dir1] [dir2]
