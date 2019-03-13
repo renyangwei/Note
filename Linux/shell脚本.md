@@ -221,4 +221,64 @@ fi
 
 | 比较 | 描述 |
 |---|---|
-| str1 = str2 | 
+| str1 = str2 | str1 等于 str2 |
+| str1 != str2 | str1 不等于 str2 |
+| str1 < str2 | str1 小于 str2 |
+| str1 > str2 | str1 大于 str2 |
+| -n str1 | str1的长度是否非0 |
+| -z str1 | str1的长度是否为0 |
+
+举例：
+
+1.字符串相等性
+
+```bash
+#!/bin/bash
+v1="ren"
+v2=$USER
+v3="renyangwei"
+if [ $v1 == $v2 ];then
+    echo "$v1 == $v2"
+else
+    echo "$v1 != $v2"
+fi
+
+if [ $v2 == $v3 ];then
+    echo "$v2 == $v3"
+fi
+```
+
+> 比较相等时会区分大小写
+
+2.字符串顺序
+
+大于和小于号要转义;大写字符比小写字母大，但是`sort`命令是小写字母在前。所谓大小就是按字母排序。
+
+```bash
+#!/bin/bash
+v1="ren"
+v2=$USER
+v3="renyangwei"
+if [ $v1 \< $v2 ];then
+    echo "$v1 < $v2"
+fi
+if [ "ab" \< "b" ];then
+    echo "ab < b"
+fi
+```
+
+### 文件比较
+
+| 比较 | 描述 |
+|---|---|
+| -d file | file是否存在并是否是目录 |
+| -e file | file是否存在 |
+| -f file | file是否存在并是否是文件 |
+| -r file | file是否存在并是否可读 |
+| -s file | file是否存在并是否非空 |
+| -w file | file是否存在并是否可写 |
+| -x file | file是否存在并是否可执行 |
+| -O file | file是否存在并属于当前用户 |
+| -G file | file是否存在并默认组与当前用户相同 |
+| file1 -nt file2 | file1是否比file2新 |
+| file1 -ot file2 | file1是否比file2旧 |
