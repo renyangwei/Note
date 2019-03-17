@@ -24,7 +24,7 @@
 
 可以用`set`查看，然后使用环境变量
 
-```
+```bash
 #!/bin/bash
 echo "UserId:$UID"
 ```
@@ -33,7 +33,7 @@ echo "UserId:$UID"
 
 定义变量不要`$`，但是使用时需要
 
-```
+```bash
 #!/bin/bash
 value=1
 echo "value = $value"
@@ -155,7 +155,7 @@ $ echo $?
 
 举例：
 
-```
+```bash
 #!/bin/bash
 if pwd;then
     echo "It works"
@@ -205,7 +205,7 @@ It works
 
 举例：
 
-```
+```bash
 #!/bin/bash
 v1=10
 v2=5
@@ -282,3 +282,133 @@ fi
 | -G file | file是否存在并默认组与当前用户相同 |
 | file1 -nt file2 | file1是否比file2新 |
 | file1 -ot file2 | file1是否比file2旧 |
+
+举例：
+
+1.检查目录
+
+```bash
+#!/bin/bash
+dir=/Users/renyangwei/Documents/ShellScript
+if [ -d $dir ];then
+    echo "$dir exist"
+fi
+```
+
+2.检查对象是否存在(包括目录和文件)
+
+```bash
+#!/bin/bash
+if [ -e $HOME ];then
+    echo "$HOME exist"
+fi
+```
+
+3.检查文件是否存在
+
+```bash
+#!/bin/bash
+file=`pwd`/a.txt
+if [ -f $file ];then
+    echo "$file exist"
+else
+    echo "$file not exist"
+fi
+```
+
+4.检查是否可读
+
+```bash
+#!/bin/bash
+file=`pwd`/a.txt
+touch file
+if [ -r file ];then
+    echo "$file can read"
+fi
+```
+
+5.检查空文件
+
+```bash
+#!/bin/bash
+file=`pwd`/a.txt
+touch $file
+if [ -s $file ];then
+    echo "$file has content"
+else
+    echo "$file is empty"
+fi
+```
+
+## 逻辑运算符
+
+    [ condition1 ] && [ condition2 ]
+    [ condition1 ] || [ condition2 ]
+
+举例：
+
+ ```bash
+#!/bin/bash
+# 逻辑运算符
+#
+file=`pwd`/a.txt
+touch $file
+if [ -s $file ] && [ -r $file ];then
+    echo "$file nice"
+else
+    echo "$file is empty"
+fi
+ ```
+## 循环
+
+### for命令
+
+    for var in list
+    do
+        commands
+    done
+
+举例：
+
+```bash
+#!/bin/bash
+# for命令
+#
+for i in a b c d
+do
+    echo "i=$i"
+done
+```
+
+```bash
+ls=`ls`
+for i in $ls;do
+    echo "i=$i"
+done
+```
+
+```bash
+for (( i=1; i<=10; i++));do
+    echo "i = $i"
+done
+```
+
+```bash
+#!/bin/bash
+# for
+# IFS 表示 for 要判断的是哪个标点，默认是空格
+IFS.OLD=$IFS
+IFS=$`\n`
+for entry in `cat /etc/passwd`;do
+    echo "values in $entry -"
+    IFS=:
+    for value in $entry;do
+        echo "  $value"
+    done
+done
+```
+
+> 重定向for循环输出，在`done` 后加类似 `> [file]` 这样的重定向语句。
+
+## 命令行参数
+
