@@ -104,6 +104,12 @@ $ wc < date.txt
 
 2.同理，两个小于号 `<<`表示追加
 
+### 重定向错误
+
+在大于号 `>` 之前加 `2`
+
+    $ ./test 2> 123.log
+
 ## 管道
 
 将一个命令的输出作为另一个命令的输入
@@ -412,3 +418,89 @@ done
 
 ## 命令行参数
 
+### 位置参数
+
+- `$0`：程序名
+- `$1`：第一个参数
+- `$2`：第二个参数
+- 以此类推，直到第九个
+- `${10}`：第十个参数
+
+### 特殊参数变量
+
+- `$#`：参数个数
+- `$*`：所有参数，作为一个整体，for循环不管用
+- `$@`：所有参数，作为单个单词，可以用for循环遍历
+
+### 移动变量
+
+- `shift`：将所有参数移动一个位置
+
+### getopts
+
+    getopts optstring variable
+
+有效的选项字母都会列在 *optstring* 中，如果有参数值就加一个 `:` 号，如果要去掉错误消息就在 *otpstring* 前加 `:` 。
+
+- `OPTARG`：保存参数值
+- `OPTIND`：保存正在处理的参数位置
+
+```bash
+#!/bin/bash
+# 处理选项
+# getopts
+#
+while getopts :ab:c opt;do
+    case "$opt" in 
+        a) echo "Found the -a option";;
+        b) echo "Found the -b option $OPTARG";;
+        c) echo "Found the -c option";;
+        *) echo "Unknow option: $opt"
+    esac
+done
+```
+
+```bash
+$ ./test.sh -a -b "ren yangwei" -c -f
+Found the -a option
+Found the -b option ren yangwei
+Found the -c option
+Unknow option: ?
+```
+
+> 如果参数没有空格就可以不写引号
+
+## 用户输入
+
+    read
+
+从标准输入（键盘）或另一个文件描述符中接受输入。
+
+举例：
+
+1.获取输入
+
+```bash
+#!/bin/bash
+# 用户输入
+# read
+#
+echo "input your name:"
+read name
+echo "hello $name"
+```
+
+2.提示符
+
+```bash
+#!/bin/bash
+# 用户输入
+# read
+#
+read -p "input your name:" name
+echo "hello $name"
+```
+
+## 后台运行程序
+
+    nohup ./test.sh &
