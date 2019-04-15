@@ -207,6 +207,8 @@ View listView = getActivity().findViewById(R.id.list);
 
  然后在Activity 中实现 `OnArticleSelectedListener` 接口即可。
 
+ > 两个 `Fragment` 永远不应该直接通信，可以通过 `Activity` 。
+
 ## 向应用栏添加项目
 
 您的片段可以通过实现 `onCreateOptionsMenu()` 向 Activity 的选项菜单（并因此向应用栏）贡献菜单项。不过，为了使此方法能够收到调用，您必须在 `onCreate()` 期间调用 `setHasOptionsMenu()`，以指示片段想要向选项菜单添加菜单项（否则，片段将不会收到对 `onCreateOptionsMenu()` 的调用）。
