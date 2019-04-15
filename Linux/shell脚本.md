@@ -504,3 +504,9 @@ echo "hello $name"
 ## 后台运行程序
 
     nohup ./test.sh &
+
+## 分割字符串
+
+举例：fltx.apk 中的fltx字符
+
+    dirName=`echo $apkFile|cut -d"." -f1`
