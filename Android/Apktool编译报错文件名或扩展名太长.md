@@ -19,3 +19,7 @@
 ## 反编译包后apktool.yml文件的doNotCompress变少
 
 更新apktool.jar 到最新版本解决问题。
+
+## 重新编译后包体积变大
+
+注意 **doNotCompress** 字段，有的文件不压缩体积就会变大
