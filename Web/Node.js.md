@@ -1,5 +1,7 @@
 # Node.js
 
+一个基于`JavaScript`语言和`V8`引擎的开源Web服务器项目
+
 ## 安装
 
 [官网](https://nodejs.org/en/)
