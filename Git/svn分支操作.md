@@ -30,6 +30,18 @@
 
 同理，在 `trunk` 目录右键，`URL to merge from`填入 `branches` 的路径即可（也是仓库中的路径）
 
+## tags
+
+如果一个阶段已经开发完成，那么我们就生成一个版本，在仓库中的 `tags`中新建一个目录，比如 1.0，然后右键 `\trunk\MyProject` > `TortoiseSVN` > `Branch/tag...` > `To Path :/tags/1.0/MyProject` 并选中 `Head revision in repository` > `Ok`，然后执行update。
+
+## 修复Bug流程
+
+假设现在1.0版本发现bug，那么先为 `tags/1.0` 打一个分支branch，操作同上，更新测试上线后再将分支打个tag到1.0.1目录下，以便下次在此基础上再次修复bug，至此bug修复已经完成；
+
+接下来将branch和trunk进行合并，合并完成后 `branches` 目录不需要就可以删除，以后有需要再创建。
+
+最后重新切换回主干上继续开发
+
 要注意的地方：
 
 - TortoiseSVN的合并发生在本地，也即你的working copy中，你无需过多担心会对repository中的代码造成影响
