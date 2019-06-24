@@ -202,3 +202,150 @@ public void viewContact(Uri contactUri) {
 
 ## 电子邮件
 
+```java
+public void composeEmail(String[] addresses, String subject, Uri attachment) {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setType("*/*");
+    intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+    intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+    intent.putExtra(Intent.EXTRA_STREAM, attachment);
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+}
+```
+
+参数
+
+| 参数 | 说明 |
+|------|------|
+| ACTION_SENDTO | 适用于不带附件 |
+| ACTION_SEND | 适用于带一个附件 |
+| ACTION_SEND_MULTIPLE | 适用于带多个附件 |
+| Intent.EXTRA_EMAIL | 包含所有“主送”收件人电子邮件地址的字符串数组 |
+| Intent.EXTRA_CC | 包含所有“抄送”收件人电子邮件地址的字符串数组 |
+| Intent.EXTRA_BCC | 包含所有“密件抄送”收件人电子邮件地址的字符串数组 |
+| Intent.EXTRA_SUBJECT | 包含电子邮件主题的字符串 |
+| Intent.EXTRA_TEXT | 包含电子邮件正文的字符串 |
+| Intent.EXTRA_STREAM | 指向附件的 Uri。如果使用的是 `ACTION_SEND_MULTIPLE` 操作，应将其改为包含多个 `Uri` 对象的 `ArrayList` |
+
+> 如果您想确保 `Intent` 只由电子邮件应用（而非其他短信或社交应用）进行处理，则需使用 `ACTION_SENDTO` 操作并加入 "mailto:" 数据架构
+
+```java
+public void composeEmail(String[] addresses, String subject) {
+    Intent intent = new Intent(Intent.ACTION_SENDTO);
+    intent.setData(Uri.parse("mailto:")); // only email apps should handle this
+    intent.putExtra(Intent.EXTRA_EMAIL, addresses);
+    intent.putExtra(Intent.EXTRA_SUBJECT, subject);
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+```
+
+经过测试，第二段代码能打开电子邮件APP，但是第一段会显示很多其他的
+
+## 文件存储
+
+### 检索特定类型的文件
+
+用于获取照片的示例，会打开照片应用或者文件管理
+
+```java
+static final int REQUEST_IMAGE_GET = 1;
+
+public void selectImage() {
+    Intent intent = new Intent(Intent.ACTION_GET_CONTENT);
+    intent.setType("image/*");
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivityForResult(intent, REQUEST_IMAGE_GET);
+    }
+}
+
+@Override
+protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    if (requestCode == REQUEST_IMAGE_GET && resultCode == RESULT_OK) {
+        Bitmap thumbnail = data.getParcelable("data");
+        Uri fullPhotoUri = data.getData();
+        // Do work with photo saved at fullPhotoUri
+        ...
+    }
+}
+```
+
+## 发起通话
+
+权限
+
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+
+示例
+
+```java
+public void dialPhoneNumber(String phoneNumber) {
+    //跳转到拨号界面，不需要权限
+    Intent intent = new Intent(Intent.ACTION_DIAL);
+    //Intent.ACTION_CALL:直接拨号，需要权限，也要检查权限
+    intent.setData(Uri.parse("tel:" + phoneNumber));
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+}
+```
+
+## 打开特定设置
+
+打开某个系统设置
+
+```java
+public void openWifiSettings() {
+    Intent intent = new Intent(Intent.ACTION_WIFI_SETTINGS);
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+}
+```
+
+常用系统设置
+
+- ACTION_SETTINGS
+- ACTION_WIRELESS_SETTINGS
+- ACTION_AIRPLANE_MODE_SETTINGS
+- ACTION_WIFI_SETTINGS
+- ACTION_APN_SETTINGS
+- ACTION_BLUETOOTH_SETTINGS
+- ACTION_DATE_SETTINGS
+- ACTION_LOCALE_SETTINGS
+- ACTION_INPUT_METHOD_SETTINGS
+- ACTION_DISPLAY_SETTINGS
+- ACTION_SECURITY_SETTINGS
+- ACTION_LOCATION_SOURCE_SETTINGS
+- ACTION_INTERNAL_STORAGE_SETTINGS
+- ACTION_MEMORY_CARD_SETTINGS
+
+## 发送短信
+
+```java
+public void composeMmsMessage(String message, Uri attachment) {
+    Intent intent = new Intent(Intent.ACTION_SEND);
+    intent.setData(Uri.parse("smsto:"));  // This ensures only SMS apps respond
+    intent.putExtra("sms_body", message);
+    intent.putExtra(Intent.EXTRA_STREAM, attachment);
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+}
+```
+
+小米手机上测试没成功调起短信APP
+
+## 加载网址
+
+```java
+public void openWebPage(String url) {
+    Uri webpage = Uri.parse(url);
+    Intent intent = new Intent(Intent.ACTION_VIEW, webpage);
+    if (intent.resolveActivity(getPackageManager()) != null) {
+        startActivity(intent);
+    }
+}
+```
