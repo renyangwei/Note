@@ -505,6 +505,11 @@ echo "hello $name"
 
     nohup ./test.sh &
 
+nohup和&的区别
+
+- `nohup`: 使命令永久的执行下去，注意并**没有后台运行**的功能，终端不能再输入
+- `&`：后台运行
+
 ## 分割字符串
 
 举例：fltx.apk 中的fltx字符
