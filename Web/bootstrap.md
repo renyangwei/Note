@@ -2,9 +2,11 @@
 
 Bootstrap 是最受欢迎的 HTML、CSS 和 JS 框架，用于开发响应式布局、移动设备优先的 WEB 项目。
 
-## 下载
+## 1.1 下载
 
 [官网下载地址](https://v3.bootcss.com/getting-started/#download)
+
+下载页有很多模版可供选择，我们下载下来，然后修修改改基本可以搞定一个简单的网站
 
 或者使用线上资源
 
@@ -48,3 +50,27 @@ Bootstrap 是最受欢迎的 HTML、CSS 和 JS 框架，用于开发响应式布
   </body>
 </html>
 ```
+
+## 1.2 Bootstrap CSS
+
+Bootstrap 使用了一些 HTML5 元素和 CSS 属性，所以请使用HTML5 文档类型（Doctype）
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+</head>
+</html>
+```
+
+为了让 Bootstrap 开发的网站对移动设备友好，确保适当的绘制和触屏缩放，需要在网页的 head 之中添加 `viewport meta` 标签
+
+```html
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+```
+
+`width` 属性控制设备的宽度
+
+`initial-scale=1.0` 确保网页加载时，以 1:1 的比例呈现，不会有任何的缩放
+
