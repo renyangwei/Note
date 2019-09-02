@@ -9,6 +9,7 @@
     - [1.2.6 图片](#126-%E5%9B%BE%E7%89%87)
   - [1.3 布局组件](#13-%E5%B8%83%E5%B1%80%E7%BB%84%E4%BB%B6)
     - [1.3.1 下拉菜单](#131-%E4%B8%8B%E6%8B%89%E8%8F%9C%E5%8D%95)
+    - [1.3.2 按钮下拉菜单](#132-%E6%8C%89%E9%92%AE%E4%B8%8B%E6%8B%89%E8%8F%9C%E5%8D%95)
 
 # bootstrap
 
@@ -482,4 +483,89 @@ Bootstrap 提供了三个可对图片应用简单样式的 class：
 下拉菜单是可切换的，以列表格式显示链接的上下文菜单
 
 如需使用下拉菜单，只需要在 `class .dropdown` 内加上下拉菜单即可
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 下拉菜单（Dropdowns）</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="dropdown">
+        <button type="button" class="btn dropdown-toggle" id="dropdownMenu1" data-toggle="dropdown">
+            主题 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="dropdownMenu1">
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">Java</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">数据挖掘</a>
+            </li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">
+                    数据通信/网络 </a>
+            </li>
+            <li role="presentation" class="divider"></li>
+            <li role="presentation">
+                <a role="menuitem" tabindex="-1" href="#">分离的链接</a>
+            </li>
+        </ul>
+    </div>
+</body>
+
+</html>
+```
+
+### 1.3.2 按钮下拉菜单
+
+如需向按钮添加下拉菜单，只需要简单地在在一个 `.btn-group` 中放置按钮和下拉菜单即可。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 基本的按钮下拉菜单</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <div class="btn-group">
+        <button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">
+            默认 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">功能</a></li>
+            <li><a href="#">另一个功能</a></li>
+            <li><a href="#">其他</a></li>
+            <li class="divider"></li>
+            <li><a href="#">分离的链接</a></li>
+        </ul>
+    </div>
+    <div class="btn-group">
+        <button type="button" class="btn btn-primary dropdown-toggle" data-toggle="dropdown">
+            原始 <span class="caret"></span>
+        </button>
+        <ul class="dropdown-menu" role="menu">
+            <li><a href="#">功能</a></li>
+            <li><a href="#">另一个功能</a></li>
+            <li><a href="#">其他</a></li>
+            <li class="divider"></li>
+            <li><a href="#">分离的链接</a></li>
+        </ul>
+    </div>
+
+</body>
+
+</html>
+```
 
