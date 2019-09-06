@@ -10,6 +10,16 @@
   - [1.3 布局组件](#13-%E5%B8%83%E5%B1%80%E7%BB%84%E4%BB%B6)
     - [1.3.1 下拉菜单](#131-%E4%B8%8B%E6%8B%89%E8%8F%9C%E5%8D%95)
     - [1.3.2 按钮下拉菜单](#132-%E6%8C%89%E9%92%AE%E4%B8%8B%E6%8B%89%E8%8F%9C%E5%8D%95)
+    - [1.3.3 输入框组](#133-%E8%BE%93%E5%85%A5%E6%A1%86%E7%BB%84)
+    - [1.3.4 导航元素](#134-%E5%AF%BC%E8%88%AA%E5%85%83%E7%B4%A0)
+    - [1.3.6 分页](#136-%E5%88%86%E9%A1%B5)
+    - [1.3.7 超大屏幕（Jumbotron）](#137-%E8%B6%85%E5%A4%A7%E5%B1%8F%E5%B9%95Jumbotron)
+    - [1.3.8 页面标题（Page Header）](#138-%E9%A1%B5%E9%9D%A2%E6%A0%87%E9%A2%98Page-Header)
+    - [1.3.9 警告（Alerts）](#139-%E8%AD%A6%E5%91%8AAlerts)
+  - [1.4 插件](#14-%E6%8F%92%E4%BB%B6)
+    - [1.4.1 过渡效果（Transition）插件](#141-%E8%BF%87%E6%B8%A1%E6%95%88%E6%9E%9CTransition%E6%8F%92%E4%BB%B6)
+    - [1.4.2 模态框（Modal）插件](#142-%E6%A8%A1%E6%80%81%E6%A1%86Modal%E6%8F%92%E4%BB%B6)
+    - [1.4.3 滚动监听（Scrollspy）](#143-%E6%BB%9A%E5%8A%A8%E7%9B%91%E5%90%ACScrollspy)
 
 # bootstrap
 
@@ -569,3 +579,473 @@ Bootstrap 提供了三个可对图片应用简单样式的 class：
 </html>
 ```
 
+### 1.3.3 输入框组
+
+输入框组扩展自 表单控件。使用输入框组，您可以很容易地向基于文本的输入框添加作为前缀和后缀的文本或按钮。
+
+向 `.form-control` 添加前缀或后缀元素的步骤如下：
+
+- 把前缀或后缀元素放在一个带有 `class .input-group` 的 `<div>` 中。
+- 接着，在相同的 `<div>` 内，在 class 为 .input-group-addon 的 `<span>` 内放置额外的内容。
+- 把该 `<span>` 放置在 `<input>` 元素的前面或者后面。
+
+请避免使用 `<select>` 元素，因为它们在 WebKit 浏览器中不能完全渲染出效果
+
+您可以通过向 .input-group 添加相对表单大小的 class（比如 `.input-group-lg`、`input-group-sm`、`input-group-xs`）来改变输入框组的大小
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 基本的输入框组</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+
+    <script type="text/javascript">
+        function changeText() {
+            // 获取输入内容
+            console.log($("#twitter").val())
+        }
+    </script>
+</head>
+
+<body>
+    <div style="padding: 100px 100px 10px">
+        <form class="bs-example bs-example-form" role="form">
+            <div class="input-group input-group-lg">
+                <span class="input-group-addon">@</span>
+                <input id="twitter" type="text" class="form-control" placeholder="twitterhandle" onchange="changeText()">
+            </div>
+
+            <div class="input-group">
+                <input type="text" class="form-control">
+                <span class="input-group-addon">.00</span>
+            </div>
+
+            <div class="input-group">
+                <span class="input-group-addon">$</span>
+                <input type="text" class="form-control">
+                <span class="input-group-addon">.00</span>
+            </div>
+        </form>
+    </div>
+</body>
+
+</html>
+```
+
+### 1.3.4 导航元素
+
+创建一个标签式的导航菜单：
+
+- 以一个带有 class `.nav` 的无序列表开始
+- 添加 class `.nav-tabs`
+
+ ```html
+ <!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 标签式的导航菜单</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <p>标签式的导航菜单</p>
+    <ul class="nav nav-tabs">
+        <li class="active"><a href="#">Home</a></li>
+        <li><a href="#">SVN</a></li>
+        <li><a href="#">iOS</a></li>
+        <li><a href="#">VB.Net</a></li>
+        <li><a href="#">Java</a></li>
+        <li><a href="#">PHP</a></li>
+    </ul>
+</body>
+
+</html>
+ ```
+
+ ### 1.3.5 导航栏
+
+ 导航栏是一个很好的功能，是 Bootstrap 网站的一个突出特点。导航栏在您的应用或网站中作为导航页头的响应式基础组件。
+
+ 创建一个默认的导航栏的步骤如下：
+
+- 向 `<nav>` 标签添加 class `.navbar`、`.navbar-default`。
+- 向上面的元素添加 `role="navigation"`，有助于增加可访问性。
+- 向 `<div>` 元素添加一个标题 class `.navbar-header`，内部包含了带有 class navbar-brand 的 `<a>` 元素。这会让文本看起来更大一号。
+- 为了向导航栏添加链接，只需要简单地添加带有 class `.nav`、`.navbar-nav` 的无序列表即可。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 默认的导航栏</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <nav class="navbar navbar-default" role="navigation">
+        <div class="navbar-header">
+            <a class="navbar-brand" href="#">W3Cschool</a>
+        </div>
+        <div>
+            <ul class="nav navbar-nav">
+                <li class="active"><a href="#">iOS</a></li>
+                <li><a href="#">SVN</a></li>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                        Java
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu">
+                        <li><a href="#">jmeter</a></li>
+                        <li><a href="#">EJB</a></li>
+                        <li><a href="#">Jasper Report</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">分离的链接</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#">另一个分离的链接</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</body>
+
+</html>
+```
+
+### 1.3.6 分页
+
+分页（Pagination），是一种无序列表，Bootstrap 像处理其他界面元素一样处理分页。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Bootstrap 实例 - 分页的状态</title>
+   <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+   <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<ul class="pagination">
+  <li><a href="#">&laquo;</a></li>
+  <li class="active"><a href="#">1</a></li>
+  <li class="disabled"><a href="#">2</a></li>
+  <li><a href="#">3</a></li>
+  <li><a href="#">4</a></li>
+  <li><a href="#">5</a></li>
+  <li><a href="#">&raquo;</a></li>
+</ul>
+
+</body>
+</html>
+```
+
+class列表
+
+| Class  | 描述  |
+|---|---|
+| .pagination  | 添加该 class 来在页面上显示分页 |
+| .disabled, .active | 您可以自定义链接，通过使用 .disabled 来定义不可点击的链接，通过使用 .active 来指示当前的页面。 |
+| .pagination-lg, .pagination-sm | 使用这些 class 来获取不同大小的项。 |
+
+
+### 1.3.7 超大屏幕（Jumbotron）
+
+顾名思义该组件可以增加标题的大小，并为登陆页面内容添加更多的外边距（margin）。使用超大屏幕（Jumbotron）的步骤如下：
+
+- 创建一个带有 class `.jumbotron` 的容器 `<div>`。
+- 除了更大的 `<h1>`，字体粗细` font-weight` 被减为200px。
+
+举例：居中的登陆页
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Bootstrap 实例 - 超大屏幕（Jumbotron）</title>
+   <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+   <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="container">
+   <div class="jumbotron">
+      <h1>欢迎登陆页面！</h1>
+      <p>这是一个超大屏幕（Jumbotron）的实例。</p>
+      <p><a class="btn btn-primary btn-lg" role="button">
+         学习更多</a>
+      </p>
+   </div>
+</div>
+
+</body>
+</html>
+```
+
+占满全屏的登陆页
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Bootstrap 实例 - 超大屏幕（Jumbotron）</title>
+   <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+   <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="jumbotron">
+   <div class="container">
+      <h1>欢迎登陆页面！</h1>
+      <p>这是一个超大屏幕（Jumbotron）的实例。</p>
+      <p><a class="btn btn-primary btn-lg" role="button">
+         学习更多</a>
+      </p>
+   </div>
+</div>
+
+</body>
+</html>
+```
+
+### 1.3.8  页面标题（Page Header）
+
+当一个网页中有多个标题且每个标题之间需要添加一定的间距时，页面标题这个功能就显得特别有用。
+
+```html
+<!DOCTYPE html>
+<html>
+<head>
+   <title>Bootstrap 实例 - 页面标题</title>
+   <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+   <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+   <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+<body>
+
+<div class="page-header">
+   <h1>页面标题实例
+      <small>子标题</small>
+   </h1>
+</div>
+<p>这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。这是一个示例文本。</p>
+
+
+</body>
+</html>
+```
+
+### 1.3.9 警告（Alerts）
+
+警告（Alerts）向用户提供了一种定义消息样式的方式。
+
+您可以通过创建一个 `<div>`，并向其添加一个 `.alert` class 和四个上下文 class（即 `.alert-success`、`.alert-info`、`.alert-warning`、`.alert-danger`）之一，来添加一个基本的警告框，添加 `alert-dismissable` 可以为其添加关闭按钮。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 可取消的警告（Dismissal Alerts）</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <div class="alert alert-success alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times; </button>
+        成功！很好地完成了提交。</div>
+    <div class="alert alert-info alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times; </button>
+        信息！请注意这个信息。</div>
+    <div class="alert alert-warning alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times; </button>
+        警告！请不要提交。</div>
+    <div class="alert alert-danger alert-dismissable">
+        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">
+            &times; </button>
+        错误！请进行一些更改。</div>
+</body>
+
+</html>
+```
+
+## 1.4 插件
+
+Bootstrap 自带 12 种 jQuery 插件，扩展了功能，可以给站点添加更多的互动。
+
+### 1.4.1 过渡效果（Transition）插件
+
+Bootstrap 的 Transition 插件可以实现过渡效果，Transition 动画比较平滑，使用起来比较方便和灵活，并且对资源的消耗比较少。
+
+过渡效果（Transition）插件提供了简单的过渡效果。
+
+
+### 1.4.2 模态框（Modal）插件
+
+模态框（Modal）是覆盖在父窗体上的子窗体。通常，目的是显示来自一个单独的源的内容，可以在不离开父窗体的情况下有一些互动。子窗体可提供信息、交互等。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 模态框（Modal）插件事件</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+    <h2>模态框（Modal）插件事件</h2><!-- 按钮触发模态框 --><button class="btn btn-primary btn-lg" data-toggle="modal"
+        data-target="#myModal">
+        开始演示模态框</button><!-- 模态框（Modal） -->
+    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">× </button>
+                    <h4 class="modal-title" id="myModalLabel">
+                        模态框（Modal）标题 </h4>
+                </div>
+                <div class="modal-body">
+                    点击关闭按钮检查事件功能。 </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-default" data-dismiss="modal">
+                        关闭 </button>
+                    <button type="button" class="btn btn-primary">
+                        提交更改 </button>
+                </div>
+            </div><!-- /.modal-content -->
+        </div><!-- /.modal-dialog -->
+    </div><!-- /.modal -->
+    <script>
+        $(function () { $('#myModal').modal('hide') });</script>
+    <script>
+        $(function () {
+            $('#myModal').on('hide.bs.modal', function () {
+                alert('嘿，我听说您喜欢模态框...');
+            })
+        });</script>
+</body>
+
+</html>
+```
+
+代码讲解：
+
+- 触发器是按钮，`data-target="#myModal"` 是您想要在页面上加载的模态框的目标
+- `.modal`用来把 `<div>` 的内容识别为模态框
+- 当模态框被切换时，`.fade` 会引起内容淡入淡出
+- `aria-labelledby="myModalLabel"`，该属性引用模态框的标题
+- 属性 `aria-hidden="true"` 用于保持模态窗口不可见，直到触发器被触发为止（比如点击在相关的按钮上）
+- `class="close"`，close 是一个 CSS class，用于为模态窗口的关闭按钮设置样式
+- `data-dismiss="modal"`，是一个自定义的 HTML5 data 属性，在这里它被用于关闭模态窗口
+- `data-toggle="modal"`，HTML5 自定义的 data 属性 data-toggle 用于打开模态窗口。
+
+下表列出了模态框中要用到事件。这些事件可在函数中当钩子使用。
+
+| 事件  | 	描述  |
+|---|---|
+| show.bs.modal  | 在调用 show 方法后触发。  |
+| shown.bs.modal | 当模态框对用户可见时触发（将等待 CSS 过渡效果完成）。 |
+| hide.bs.modal | 当调用 hide 实例方法时触发。 |
+| hidden.bs.modal | 当模态框完全对用户隐藏时触发。 |
+
+
+### 1.4.3 滚动监听（Scrollspy）
+
+滚动监听（Scrollspy）插件，即自动更新导航插件，会根据滚动条的位置自动更新对应的导航目标。其基本的实现是随着您的滚动，基于滚动条的位置向导航栏添加 `.active` class。
+
+**用法**
+
+通过 data 属性：向您想要监听的元素（通常是 body）添加 `data-spy="scroll"`。然后添加带有 Bootstrap `.nav` 组件的父元素的 ID 或 class 的属性` data-target`。为了它能正常工作，您必须确保页面主体中有匹配您所要监听链接的 ID 的元素存在。
+
+```html
+<!DOCTYPE html>
+<html>
+
+<head>
+    <title>Bootstrap 实例 - 滚动监听（Scrollspy）插件</title>
+    <link href="//cdn.bootcss.com/bootstrap/3.3.6/css/bootstrap.min.css" rel="stylesheet">
+    <script src="//cdn.bootcss.com/jquery/2.1.1/jquery.min.js"></script>
+    <script src="//cdn.bootcss.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
+</head>
+
+<body>
+
+    <nav id="navbar-example" class="navbar navbar-default navbar-static" role="navigation">
+        <div class="navbar-header">
+            <button class="navbar-toggle" type="button" data-toggle="collapse" data-target=".bs-js-navbar-scrollspy">
+                <span class="sr-only">切换导航</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">教程名称</a>
+        </div>
+        <div class="collapse navbar-collapse bs-js-navbar-scrollspy">
+            <ul class="nav navbar-nav">
+                <li><a href="#ios">iOS</a></li>
+                <li><a href="#svn">SVN</a></li>
+                <li class="dropdown">
+                    <a href="#" id="navbarDrop1" class="dropdown-toggle" data-toggle="dropdown">Java
+                        <b class="caret"></b>
+                    </a>
+                    <ul class="dropdown-menu" role="menu" aria-labelledby="navbarDrop1">
+                        <li><a href="#jmeter" tabindex="-1">jmeter</a></li>
+                        <li><a href="#ejb" tabindex="-1">ejb</a></li>
+                        <li class="divider"></li>
+                        <li><a href="#spring" tabindex="-1">spring</a></li>
+                    </ul>
+                </li>
+            </ul>
+        </div>
+    </nav>
+    <div data-spy="scroll" data-target="#navbar-example" data-offset="0"
+        style="height:200px;overflow:auto; position: relative;">
+        <h4 id="ios">iOS</h4>
+        <p>iOS 是一个由苹果公司开发和发布的手机操作系统。最初是于 2007 年首次发布 iPhone、iPod Touch 和 Apple
+            TV。iOS 派生自 OS X，它们共享 Darwin 基础。OS X 操作系统是用在苹果电脑上，iOS 是苹果的移动版本。
+        </p>
+        <h4 id="svn">SVN</h4>
+        <p>Apache Subversion，通常缩写为 SVN，是一款开源的版本控制系统软件。Subversion 由 CollabNet 公司在 2000 年创建。但是现在它已经发展为 Apache Software
+            Foundation 的一个项目，因此拥有丰富的开发人员和用户社区。
+        </p>
+        <h4 id="jmeter">jMeter</h4>
+        <p>jMeter 是一款开源的测试软件。它是 100% 纯 Java 应用程序，用于负载和性能测试。
+        </p>
+        <h4 id="ejb">EJB</h4>
+        <p>Enterprise Java Beans（EJB）是一个创建高度可扩展性和强大企业级应用程序的开发架构，部署在兼容应用程序服务器（比如 JBOSS、Web Logic 等）的 J2EE 上。
+        </p>
+        <h4 id="spring">Spring</h4>
+        <p>Spring 框架是一个开源的 Java 平台，为快速开发功能强大的 Java 应用程序提供了完备的基础设施支持。
+        </p>
+        <p>Spring 框架最初是由 Rod Johnson 编写的，在 2003 年 6 月首次发布于 Apache 2.0 许可证下。
+        </p>
+    </div>  
+
+</body>
+
+</html>
+```
+
+其他有时间再看，先放一放，不太用得到。
