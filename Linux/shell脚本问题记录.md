@@ -1,6 +1,6 @@
 # shell脚本问题记录
 
-## 在Linux中执行.sh脚本，异常`/bin/sh^M: bad interpreter: No such file or directory`
+## 1 在Linux中执行.sh脚本，异常`/bin/sh^M: bad interpreter: No such file or directory`
 
 解决方法：
 
@@ -35,6 +35,16 @@
 
     ./filename
 
-## 格式化时间
+## 2 格式化时间
 
     DATE=`date '+%Y-%m-%d %H:%M:%S'`
+
+## 3 替换文件内容
+
+1、将当前目录下包含jack串的文件中，jack字符串替换为tom
+
+    sed -i "s/jack/tom/g" `grep "jack" -rl ./`
+
+2、将某个文件中的jack字符串替换为tom
+
+    sed -i "s/jack/tom/g" test.txt
