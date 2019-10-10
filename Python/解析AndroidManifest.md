@@ -26,6 +26,15 @@ applicationClass = application.get(getAttribKey("name"))
 activityNodes = application.findall("activity")
 # meta-data
 metas = application.findall("meta-data")
+# 修改/增加节点的属性及属性值
+application.set(getAttribKey("icon"), "icon")
+# 删除节点的属性
+del application.attrib[getAttribKey("icon")]
+# 改变/增加/删除一个节点的文本
+# 只要修改text，要是没有则新增
+application.text = ''
+
+tree.write('manifest.xml', 'utf-8')
 
 def getAttribKey(key):
     return '{' + androidNS + '}' + key
