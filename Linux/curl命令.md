@@ -13,6 +13,18 @@ curl http://example.com/test.iso -o filename.iso --progress
 - --progress : 显示进度条
 - --silent : 静默模式（感觉还是有进度条比较好）
 
+如果要批量下载的话可以使用wget，[windows版本下载地址](https://eternallybored.org/misc/wget/)
+
+```bash
+wget -i filelist.txt
+# filelist保存下载地址
+cat filelist.txt
+url1
+url2
+url3
+url4
+```
+
 ## get请求
 
 ```bash
