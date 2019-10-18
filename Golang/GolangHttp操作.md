@@ -65,4 +65,4 @@ func httpDo() {
 }
 ```
 
-推荐一个很好的Go example：https://github.com/chenjiebin/goexample
+推荐一个很好的 [Go example](https://github.com/chenjiebin/goexample)
