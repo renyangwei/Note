@@ -74,6 +74,9 @@ t3FaoJoAsncM1Q9x5+3V0Ww68/eIFmb1zuUFljQJKprrX88XypNDvjYNby6vw/Pb0rwert/En
 mZ+AW4OZPnTPI89ZPmVMLuayrD2cE86Z/il8b+gw3r3+1nKatmIkjn2so1d01QraTlMqVSsbx
 NrRFi9wrf+M7Q== schacon@agadorlaptop.local
 ```
+
+然后将远程仓库地址由 https 改为 ssh。
+
 2. 首次提交失败，提示`Push rejected: Push to origin/master was rejected`
 先和远程仓库合并
 ```
