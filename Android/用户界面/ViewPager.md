@@ -2,11 +2,11 @@
 
 视图翻页工具，提供了多页面切换的效果。
 
-有两种用法：广告轮播和卡片切换。
+使用场景：广告轮播、卡片切换和第一次进入的引导界面。
 
-## 广告轮播
+## 1 广告轮播
 
-**布局**
+### 1.1 布局
 
 ```xml
 <!-- 轮播图 -->
@@ -38,7 +38,7 @@
 </TextView>
 ```
 
-**适配器**
+### 1.2 适配器
 
 ```kotlin
 // 类名和构造函数
@@ -73,7 +73,7 @@ class BookShelfAdapter(context: Context, data: List<String>) : PagerAdapter() {
 }
 ```
 
-**Activity**
+### 1.3 Activity
 
 ```kotlin
  override fun onCreateView(
@@ -96,7 +96,49 @@ private fun initData(): List<String> {
     }
 ```
 
-## 与Fragment结合使用
+## 2 与Fragment结合使用
 
 与Fragment结合使用其实也一样，只是用Fragment代替原先的View，填充Viewpager；然后就是Adapter不一样，配合Fragment使用的有两个Adapter： `FragmentPagerAdapter` 和 `FragmentStatePagerAdapter` 。
 
+区别：前者在换到其他页时不会销毁之前的页面内容，适合页面较少的情况使用，后者则是换到其他页会将之前的页面给销毁，返回到之前的页面就是重新加载，适合页面过多的情况使用。
+
+举例：
+
+```kotlin
+class MyFragmentAdapter(fm: FragmentManager, index: Int, list: List<Fragment>) : FragmentPagerAdapter(fm, index) {
+
+    val mList: List<Fragment> = list
+
+    override fun getItem(position: Int): Fragment {
+        return mList[position]
+    }
+
+    override fun getCount(): Int {
+        return mList.size
+    }
+}
+```
+
+另一个也类似。
+
+## 3 圆形指示器
+
+思路：自定义LinnerLayout，用CheckRadio动态构造小圆点，监听 viewPager 切换事件，然后切换即可。
+
+也可以使用第三方库，比如 [CircleIndicator](https://github.com/ongakuer/CircleIndicator)。
+
+## 4 自动切换滑动
+
+1. 处理自动滑动和手动滑动
+2. 自动滑动使用 handle
+
+参考 [ViewPager循环、自动滚动效果](https://www.jianshu.com/p/58f356eaa6e9)
+
+定时任务参考 [Android定时任务的应用及实现](https://www.jianshu.com/p/9304c8faf79f)
+
+## 5 第三方库
+
+- [youth5201314/banner](https://github.com/youth5201314/banner)
+- [alibaba/UltraViewPager](https://github.com/alibaba/UltraViewPager)
+
+试了阿里巴巴的UltraViewPager，就是滚动速度不能自定义，第一个可自定义比较多。
