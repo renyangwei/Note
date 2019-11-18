@@ -218,3 +218,39 @@ View listView = getActivity().findViewById(R.id.list);
 ## 完整示例
 
 [看这里](https://developer.android.google.cn/samples?hl=zh-cn#Fragment)
+
+## 不创建实例的方法
+
+主界面的底部导航会用到Fragment，如果用 `replace` ，每次切换都会重新加载界面，不仅体验不好，而且浪费资源。
+
+所以最好使用 `show` 和 `hide` 来隐藏/显示。
+
+举例：
+
+```kotlin
+class FragmentUtil {
+
+    companion object {
+        fun show(fragmentManager: FragmentManager, containerId:Int, fragment: Fragment) {
+            hide(fragmentManager)
+            if (fragmentManager.fragments.contains(fragment)) {
+                fragmentManager.beginTransaction().show(fragment).commit()
+            } else {
+                add(fragmentManager, containerId, fragment)
+            }
+        }
+
+        fun hide(fragmentManager: FragmentManager) {
+            val transaction: FragmentTransaction = fragmentManager.beginTransaction()
+            for (fragment:Fragment in fragmentManager.fragments) {
+                transaction.hide(fragment)
+            }
+            transaction.commit()
+        }
+
+        fun add(fragmentManager: FragmentManager, containerId:Int, fragment: Fragment) {
+            fragmentManager.beginTransaction().add(containerId, fragment).commit()
+        }
+    }
+}
+```
