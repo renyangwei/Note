@@ -2,7 +2,7 @@
 
 官网解释：表示一个弹出窗口，可用于显示任意视图。它是一个浮动容器，显示在当前活动的顶部。
 
-## 使用
+## 使用--初始化
 
 1. 创建布局文件
 2. 创建popupwindow
@@ -61,3 +61,99 @@ popupWindow.showAsDropDown(anchor, 0, 0, Gravity.END)
 popupWindow.showAtLocation(anchor, Gravity.BOTTOM, 0, 0)
 // 其他位置，比如Gravity.Top表示在屏幕上方
 ```
+
+## 使用--继承
+
+1. 创建布局文件
+2. 创建自定义类继承PopupWindow,自定义构造函数
+3. 解析布局文件，获得内部控件
+4. 设置宽高
+5. 设置背景
+6. setContentView设置内容
+7. setAnimationStyle设置动画(可选)
+8. 显示
+
+举例：
+
+```java
+public class MyWindow extends PopupWindow {
+
+    private Context mContext;
+    private ViewGroup mRoot;
+
+    public MyWindow(Context context, ViewGroup root) {
+       super(context);
+       mContext = context;
+       mRoot = root;
+       initView();
+    }
+
+    private void initView() {
+        View view = LayoutInflater.from(mContext).inflate(ResourceUtil.getLayout("yours.xml"), null);
+        // 设置SelectPicPopupWindow弹出窗体的宽
+        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
+        // 设置SelectPicPopupWindow弹出窗体的高
+        this.setHeight(SdkUtil.dip2px(mContext, 48));
+        // 一定要设置，建议透明，这样可以显示xml的背景色
+        setBackgroundDrawable(new ColorDrawable(ResourceUtil.getColor("dyb_transparent")));
+        // 一定要设置
+        setContentView(view);
+        // 设置动画
+        setAnimationStyle(ResourceUtil.getStyle("SiginAnim"));
+    }
+
+     public void show() {
+         // 显示在屏幕最上方
+        showAtLocation(mRoot, Gravity.TOP, 0, 0);
+    }
+
+    private void viewDismiss() {
+        dismiss();
+    }
+}
+```
+
+style.xml
+
+```xml
+<style name="SiginAnim" parent="@android:style/Animation">
+    <item name="@android:windowEnterAnimation">@anim/anim_sign_in</item>
+    <item name="@android:windowExitAnimation">@anim/anim_sign_out</item>
+</style>
+```
+
+anim_sign_in.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:shareInterpolator="true">
+    <translate
+        android:duration="@integer/dyb_medium_anim_time"
+        android:fromYDelta="-100%p"
+        android:toYDelta="0%p" />
+</set>
+```
+
+anim_sign_out.xml
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<set xmlns:android="http://schemas.android.com/apk/res/android" android:shareInterpolator="true">
+    <translate
+        android:duration="@integer/dyb_medium_anim_time"
+        android:fromYDelta="0%p"
+        android:toYDelta="-100%p" />
+</set>
+```
+
+## 总结
+
+popupWindow适合用做的控件：
+
+- APP内引导
+- 自定义下拉菜单（有官方提供的popupMenu）
+- 自定义Toast提示（比如sdk的登录）
+- 悬浮窗
+- 等等
+
+用途还是比较广泛。
