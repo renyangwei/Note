@@ -117,8 +117,8 @@ style.xml
 
 ```xml
 <style name="SiginAnim" parent="@android:style/Animation">
-    <item name="@android:windowEnterAnimation">@anim/anim_sign_in</item>
-    <item name="@android:windowExitAnimation">@anim/anim_sign_out</item>
+    <item name="android:windowEnterAnimation">@anim/anim_sign_in</item>
+    <item name="android:windowExitAnimation">@anim/anim_sign_out</item>
 </style>
 ```
 
