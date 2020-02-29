@@ -13,11 +13,10 @@
     - [3.9 注释支持库](#39-%e6%b3%a8%e9%87%8a%e6%94%af%e6%8c%81%e5%ba%93)
     - [3.10 设计支持库](#310-%e8%ae%be%e8%ae%a1%e6%94%af%e6%8c%81%e5%ba%93)
     - [3.11 自定义标签支持库](#311-%e8%87%aa%e5%ae%9a%e4%b9%89%e6%a0%87%e7%ad%be%e6%94%af%e6%8c%81%e5%ba%93)
-  - [4. 数据绑定库](#4-%e6%95%b0%e6%8d%ae%e7%bb%91%e5%ae%9a%e5%ba%93)
-    - [4.1 搭建环境](#41-%e6%90%ad%e5%bb%ba%e7%8e%af%e5%a2%83)
-    - [4.2 布局和绑定表达式](#42-%e5%b8%83%e5%b1%80%e5%92%8c%e7%bb%91%e5%ae%9a%e8%a1%a8%e8%be%be%e5%bc%8f)
-    - [4.3 使用可观察的数据对象](#43-%e4%bd%bf%e7%94%a8%e5%8f%af%e8%a7%82%e5%af%9f%e7%9a%84%e6%95%b0%e6%8d%ae%e5%af%b9%e8%b1%a1)
-    - [4.4 生成绑定类](#44-%e7%94%9f%e6%88%90%e7%bb%91%e5%ae%9a%e7%b1%bb)
+  - [4. Jetpack App 架构](#4-jetpack-app-%e6%9e%b6%e6%9e%84)
+    - [4.1 Model](#41-model)
+    - [4.2 View](#42-view)
+    - [4.3 Controller](#43-controller)
   
 # Android Jetpack
 
@@ -39,13 +38,13 @@ allprojects {
 然后，您可以添加 Jetpack 组件，例如作为 Lifecycles 库的一部分的 LiveData 和 ViewModel 等架构组件，如下所示：
 
 ```
-    dependencies {
-        def lifecycle_version = "2.0.0"
-        implementation "androidx.lifecycle:lifecycle-extensions:$lifecycle_version"
-        // Optional : Kotlin extension (https://d.android.com/kotlin/ktx)
-        implementation "androidx.lifecycle:lifecycle-viewmodel-ktx:$lifecycle_version"
-        ...
-    }
+dependencies {
+    def lifecycle_version = "2.0.0"
+    implementation "androidxlifecycle:lifecycle-extensions:$lifecycle_version"
+    // Optional : Kotlin extension (https://d.androidcom/kotlin/ktx)
+    implementation "androidxlifecycle:lifecycle-viewmodel-ktx:$lifecycle_versio"
+    ...
+}
 ```
 
 ## 2. Android KTX
@@ -140,12 +139,85 @@ V4片段库提供了一个Fragment类。v4 Fragment类是一个独立的类，�
 
     com.android.support:customtabs:28.0.0
 
-## 4. 数据绑定库
+## 4. Jetpack App 架构
 
-数据绑定库是一种支持库，借助该库，您可以使用声明性格式（而非程序化地）将布局中的界面组件绑定到应用中的数据源。
+Jetpack 里的架构和以往已经大不相同，主要思想是模型驱动界面。
+
+![应用架构](../../assets/android_jetpack.png)
+
+### 4.1 Model
+
+`LiveData` 是一种可观察的数据存储器。应用中的其他组件可以使用此存储器监控对象的更改，而无需在它们之间创建明确且严格的依赖路径。`LiveData` 组件还遵循应用组件（如 `Activity`、`Fragment` 和 `Service`）的生命周期状态，并包括清理逻辑以防止对象泄漏和过多的内存消耗。
+
+**如何使用**
+
+1. 继承 `ViewModel` 类
+2. 监听字段类型用 `MutableLiveData<T>`
+3. 设置监听
+
+**举例**
+
+```kotlin
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+import kotlin.properties.Delegates
+
+class MyViewModel : ViewModel() {
+
+    private lateinit var aTeamScore: MutableLiveData<Int>
+    private lateinit var bTeamScore: MutableLiveData<Int>
+
+    private var aBack by Delegates.notNull<Int>()
+    private var bBack by Delegates.notNull<Int>()
+
+//    写一个判断初始化的方法，然后通过这个方法去得到是否初始化
+    fun isATeamScoreInitialzed()=::aTeamScore.isInitialized
+    fun isBTeamScoreInitialzed()=::bTeamScore.isInitialized
 
 
-### 4.1 搭建环境
+    fun getAScore(): MutableLiveData<Int> {
+        if (!isATeamScoreInitialzed()) {
+            aTeamScore = MutableLiveData(0)
+        }
+        return aTeamScore
+    }
+
+    fun addAScore(add:Int) {
+        aBack = aTeamScore.value!!
+        bBack = bTeamScore.value!!
+        aTeamScore.value = aTeamScore.value?.plus(add)
+    }
+
+    fun getBScore(): MutableLiveData<Int> {
+        if (!isBTeamScoreInitialzed()) {
+            bTeamScore = MutableLiveData(0)
+        }
+        return bTeamScore
+    }
+
+    fun addBScore(add: Int) {
+        aBack = aTeamScore.value!!
+        bBack = bTeamScore.value!!
+        bTeamScore.value = bTeamScore.value?.plus(add)
+    }
+
+    fun reset() {
+        aTeamScore.value = 0
+        bTeamScore.value = 0
+    }
+
+    fun undo() {
+        aTeamScore.value = aBack
+        bTeamScore.value = bBack
+    }
+}
+```
+
+### 4.2 View
+
+数据绑定库 `Databing` 是一种支持库，借助该库，您可以使用声明性格式（而非程序化地）将布局中的界面组件绑定到应用中的数据源。
+
+**搭建环境**
 
 要将应用程序配置为使用数据绑定，请将dataBinding元素添加到 *build.gradle* 应用程序模块中的文件中：
 
@@ -167,64 +239,82 @@ android {
     implementation "androidx.lifecycle:lifecycle-viewmodel:$lifecycle_version"
 ```
 
-### 4.2 布局和绑定表达式
+**布局和绑定表达式**
 
 借助表达式语言，您可以编写将变量关联到布局中的视图的表达式。数据绑定库会自动生成将布局中的视图与您的数据对象绑定所需的类。该库提供了可在布局中使用的导入、变量和头文件等功能。
 
-就是在原有的布局上增加layout根目录，然后使用data标签定义变量
+就是在原有的布局上增加layout根目录，然后使用data标签定义变量。
+
+> Android Studio 可以一键转换，不用从头开始写。
+
+**如何使用**
+
+1. 新增 `data` 标签，设置变量 `variable`；
+2. 将布局中的界面组件的数据用变量表示；
+3. 在Activity中绑定。
+
+**举例**
 
 ```xml
 <?xml version="1.0" encoding="utf-8"?>
-<layout xmlns:android="http://schemas.android.com/apk/res/android">
-   <data>
-       <variable name="user" type="com.example.User"/>
-   </data>
-   <LinearLayout
-       android:orientation="vertical"
-       android:layout_width="match_parent"
-       android:layout_height="match_parent">
-       <TextView android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@{user.firstName}"/>
-       <TextView android:layout_width="wrap_content"
-           android:layout_height="wrap_content"
-           android:text="@{user.lastName}"/>
-   </LinearLayout>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+
+    <data>
+        <variable
+            name="score"
+            type="com.ren.scoreboard.MyViewModel" />
+    </data>
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".MainActivity">
+
+        <Button
+            android:id="@+id/button6"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:text="@string/add_3"
+            android:textColor="@android:color/white"
+            android:textSize="@dimen/btn_text_size"
+            app:layout_constraintBottom_toTopOf="@+id/guideline7"
+            app:layout_constraintEnd_toStartOf="@+id/guideline11"
+            app:layout_constraintStart_toStartOf="@+id/guideline9"
+            app:layout_constraintTop_toTopOf="@+id/guideline6"
+            android:onClick="@{()->score.addAScore(3)}"/>
+
+        <TextView
+            android:id="@+id/textView"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/team_a_name"
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/team_title"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toStartOf="@+id/guideline2"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+        <TextView
+            android:id="@+id/textView2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/team_b_name"
+            android:textColor="@android:color/background_dark"
+            android:textSize="@dimen/team_title"
+            app:layout_constraintBottom_toTopOf="@+id/guideline3"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="@+id/guideline2"
+            app:layout_constraintTop_toTopOf="@+id/guideline" />
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
 ```
 
 其中data描述了可以在此布局中使用的属性， `@{}` 语法则将布局内的表达式写入属性属性中。
-
-**User对象**
-
-```java
-public class User {
-  private final String firstName;
-  private final String lastName;
-  public User(String firstName, String lastName) {
-      this.firstName = firstName;
-      this.lastName = lastName;
-  }
-  public String getFirstName() {
-      return this.firstName;
-  }
-  public String getLastName() {
-      return this.lastName;
-  }
-}
-```
-
-**绑定数据**
-
-```java
-@Override
-protected void onCreate(Bundle savedInstanceState) {
-   super.onCreate(savedInstanceState);
-   ActivityMainBinding binding = DataBindingUtil.setContentView(this, R.layout.activity_main);
-   User user = new User("Test", "User");
-   binding.setUser(user);
-}
-```
 
 **表达语言**
 
@@ -324,126 +414,39 @@ android:text="@{map[key]}"
         alias="Vista"/>
 ```
 
-感觉 `import` 和 `variable` 没什么区别，导入一个类和定义一个变量不是一个意思吗
+### 4.3 Controller
 
+Activity 或者 Fragment 不仅负责界面交互，还要负责监听数据变化，更新UI。
 
-### 4.3 使用可观察的数据对象
+**如何使用**
 
-可观察性是指对象将其数据更改通知他人的能力。数据绑定库使您可以观察对象，字段或集合。
+1. 获取绑定对象；
+2. 获取 `ViewModel` 对象;
+3. 连接并设置监听。
 
-任何普通的旧对象都可以用于数据绑定，但是修改对象不会自动导致UI更新。数据绑定可用于使您的数据对象在数据更改时通知其他对象（称为侦听器）。
+**举例**
 
-有三种不同类型的可观察类： 对象，字段和 集合。
+```kotlin
+import androidx.appcompat.app.AppCompatActivity
+import android.os.Bundle
+import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.ViewModelProvider
+import com.ren.scoreboard.databinding.ActivityMainBinding
 
-当这些可观察数据对象之一绑定到UI且数据对象的属性更改时，UI将自动更新。
+class MainActivity : AppCompatActivity() {
 
-1.字段
+    private lateinit var myViewModel:MyViewModel
 
-可观察字段是具有单个字段的自包含可观察对象。请使用public finalJava编程语言创建一个属性。
+    private lateinit var binding: ActivityMainBinding
 
-- ObservableBoolean
-- ObservableByte
-- ObservableChar
-- ObservableShort
-- ObservableInt
-- ObservableLong
-- ObservableFloat
-- ObservableDouble
-- ObservableParcelable
-
-> 注意：Android Studio 3.1及更高版本允许您用LiveData对象替换可观察字段，这为您的应用程序提供了更多好处。有关更多信息，请参见使用LiveData通知UI有关数据更改。
-
-举例：
-
-内部字段改成只读的ObservableField
-
-```java
-public class User {
-    public final ObservableField<String> firstName = new ObservableField<>();
-    public final ObservableField<String> lastName = new ObservableField<>();
-}
-```
-
-```xml
-<data>
-    <variable
-        name="user"
-        type="ren.bottomnavigation.User" />
-</data>
-
-<TextView
-    android:id="@+id/message"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"
-    android:text="@{user.firstName}"
-/>
-```
-
-只需要改字段就能自动改控件的内容
-
-```java
-user.firstName.set("Google");
-```
-
-2.集合
-
-一些应用程序使用动态结构来保存数据。可观察的集合允许使用密钥访问这些结构。
-
-```java
-ObservableArrayMap<String, Object> user = new ObservableArrayMap<>();
-user.put("firstName", "Google");
-user.put("lastName", "Inc.");
-user.put("age", 17);
-```
-
-在布局中，可以使用字符串键找到Map的值
-
-```xml
-<data>
-    <import type="android.databinding.ObservableMap"/>
-    <variable name="user" type="ObservableMap<String, Object>"/>
-</data>
-…
-<TextView
-    android:text="@{user.lastName}"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
-<TextView
-    android:text="@{String.valueOf(1 + (Integer)user.age)}"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content"/>
-```
-
-3.对象
-
-实现Observable接口的类 允许注册要在可观察对象上进行属性更改通知的侦听器。
-
-```java
-private static class User extends BaseObservable {
-    private String firstName;
-    private String lastName;
-
-    @Bindable
-    public String getFirstName() {
-        return this.firstName;
-    }
-
-    @Bindable
-    public String getLastName() {
-        return this.lastName;
-    }
-
-    public void setFirstName(String firstName) {
-        this.firstName = firstName;
-        notifyPropertyChanged(BR.firstName);
-    }
-
-    public void setLastName(String lastName) {
-        this.lastName = lastName;
-        notifyPropertyChanged(BR.lastName);
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        binding = DataBindingUtil.setContentView(this, R.layout.activity_main)
+        myViewModel = ViewModelProvider.AndroidViewModelFactory(application).create(MyViewModel::class.java)
+        binding.score = myViewModel
+        binding.lifecycleOwner = this
     }
 }
 ```
 
-### 4.4 生成绑定类
-
+架构中其他的部分以后再补充。
