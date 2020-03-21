@@ -17,6 +17,8 @@
     - [4.1 Model](#41-model)
     - [4.2 View](#42-view)
     - [4.3 Controller](#43-controller)
+    - [4.4 Lifecycle 生命周期](#44-lifecycle-%e7%94%9f%e5%91%bd%e5%91%a8%e6%9c%9f)
+    - [4.5 Navication 导航](#45-navication-%e5%af%bc%e8%88%aa)
   
 # Android Jetpack
 
@@ -450,3 +452,54 @@ class MainActivity : AppCompatActivity() {
 ```
 
 架构中其他的部分以后再补充。
+
+### 4.4 Lifecycle 生命周期
+
+生命周期感知，用于解耦在生命周期函数中的操作。
+
+感觉用得不多，SDK倒是可以这样写，但是SDK又不能引入Jetpack。
+
+1. 新建一个类实现 `LifecycleObserver`；
+2. 新增注解函数；
+3. Activity中添加监听。
+
+举例：
+
+```kotlin
+class MyChronometer(context: Context?, attrs: AttributeSet?) : Chronometer(context, attrs), LifecycleObserver {
+
+    private var time:Long = 0
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_PAUSE)
+    private fun pauseMeter() {
+        time = SystemClock.elapsedRealtime() - base
+    }
+
+    @OnLifecycleEvent(Lifecycle.Event.ON_RESUME)
+    private fun resumeMeter() {
+        base = SystemClock.elapsedRealtime() - time
+        start()
+    }
+}
+```
+
+```kotlin
+override fun onCreate(savedInstanceState: Bundle?) {
+    val myChronometer = findViewById<MyChronometer>(R.id.meter)
+    lifecycle.addObserver(myChronometer)
+}
+```
+
+### 4.5 Navication 导航
+
+用于 Fragment 导航，因为Google提倡使用一个Activity，其他界面使用Fragment。
+
+1. 在 *res* 目录中新建 `Navigation` 文件；
+2. 点击左上角加号，New Destination；
+3. 依次添加主界面（Host Fragment），以及导航到其他Fragment；
+4. 回到 Activity 的 layout 文件中，在 Containers 里选择 `NavHostFragment`，会提示选择 `Navigation` 文件，选择刚刚创建的。
+
+![navication](../../assets/navigation.png)
+
+![navication Activity](../../assets/navigation_activity.png)
+
