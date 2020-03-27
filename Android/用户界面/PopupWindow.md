@@ -85,23 +85,15 @@ public class MyWindow extends PopupWindow {
        super(context);
        mContext = context;
        mRoot = root;
-       initView();
+       setHeight(ViewGroup.LayoutParams.WRAP_CONTENT);
+       setWidth(ViewGroup.LayoutParams.WRAP_CONTENT);
+       setOutsideTouchable(true);
+       setFocusable(true);
+       setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+       View contentView = LayoutInflater.from(context).inflate(R.layout.popup_test, null, false);
+       setContentView(contentView);
+       setAnimationStyle(ResourceUtil.getStyle("SiginAnim"));
     }
-
-    private void initView() {
-        View view = LayoutInflater.from(mContext).inflate(ResourceUtil.getLayout("yours.xml"), null);
-        // 设置SelectPicPopupWindow弹出窗体的宽
-        this.setWidth(ViewGroup.LayoutParams.MATCH_PARENT);
-        // 设置SelectPicPopupWindow弹出窗体的高
-        this.setHeight(SdkUtil.dip2px(mContext, 48));
-        // 一定要设置，建议透明，这样可以显示xml的背景色
-        setBackgroundDrawable(new ColorDrawable(ResourceUtil.getColor("dyb_transparent")));
-        // 一定要设置
-        setContentView(view);
-        // 设置动画
-        setAnimationStyle(ResourceUtil.getStyle("SiginAnim"));
-    }
-
      public void show() {
          // 显示在屏幕最上方
         showAtLocation(mRoot, Gravity.TOP, 0, 0);
