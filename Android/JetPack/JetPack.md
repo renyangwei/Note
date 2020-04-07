@@ -503,3 +503,18 @@ override fun onCreate(savedInstanceState: Bundle?) {
 
 ![navication Activity](../../assets/navigation_activity.png)
 
+导航：
+
+```java
+NavController controller = Navigation.findNavController(v);
+controller.navigate(R.id.action_wordsFragment_to_addFragment);
+```
+
+`id` 是在 `Navigation` 文件中连线时系统自动创建的。
+
+导航返回：
+
+```java
+NavController controller = Navigation.findNavController(v);
+controller.navigateUp();
+```
