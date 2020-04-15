@@ -106,6 +106,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
 }
 ```
 
+适配器还可以使用 `ListAdapter`，传入List，自动在后台比较数据，使用动画更新，精简代码，还是很不错的。
+
 ## 自定义RecyclerView
 
 ### 修改布局
