@@ -19,3 +19,12 @@
 ## 提交到svn
 
     git svn dcommit
+
+## 冲突解决
+
+如果本地和svn都进行了修改，则不能快速前进，git svn rebase 会出现错误。
+这时应该按以下步骤操作：
+
+1. 手动修改冲突文件，修改完成后git add
+2. git rebase --continue
+3. git svn dcommit
