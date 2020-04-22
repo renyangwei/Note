@@ -125,7 +125,15 @@ NSLog(@"md=%@", [md objectForKey:@"10"]);
 [md removeAllObjects];
 ```
 
+### 3.9 类型转化
 
+**NSInteger转化NSString类型**
+
+`NSString *m = [NSString stringWithFormat:@"%d", {NSInteger}];`
+
+**NSString转化 NSInteger类型：**
+
+`NSInteger *i = [{NSInteger} intValue]; `
 
 ## 3.算法
 
