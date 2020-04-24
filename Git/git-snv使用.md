@@ -5,7 +5,7 @@
 ## 从svn克隆
 
     git svn clone <svn仓库路径> [本地文件夹名] [其他参数] 相当于git clone
-
+    
     git svn clone -r<开始版本号>:<结束版本号> <svn项目地址> [其他参数]
 
 举例：
@@ -28,3 +28,4 @@
 1. 手动修改冲突文件，修改完成后git add
 2. git rebase --continue
 3. git svn dcommit
+
