@@ -15,7 +15,7 @@ Android Studio 编译原生库的默认构建工具是 [CMake](https://cmake.org
 
 在 **SDK Manager** 中下载、安装NDK和CMake。
 
-![ndk](..\assets\ndk_download.png)
+![ndk](../../assets/ndk_download.png)
 
 也可以安装特定版本的 NDK，勾选右下角 **Show Package Details** 。
 
@@ -29,7 +29,7 @@ Android Studio 编译原生库的默认构建工具是 [CMake](https://cmake.org
 2. 将 C++ 源文件放到该目录；
 3. 配置 **CMake** 文件，并将该文件路径配置到 Gradle 。
 
-![ndk_cpp](..\assets\ndk_cpp.png)
+![ndk_cpp](../../assets/ndk_cpp.png)
 
 ### 3.1 配置CMake文件
 
