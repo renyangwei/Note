@@ -1,5 +1,14 @@
 # 安装启动mysql
 
-    $ docker run --name some-mysql -e MYSQL_ROOT_PASSWORD=my-secret-pw -d mysql:tag
+```bash
+# 下载并启动
+$ docker run --name mysql-test -e MYSQL_ROOT_PASSWORD=123456 -d mysql:tag
+# 进入容器
+$ docker exec -it mysql bash
+# 登录mysql
+mysql -u root -p
+```
 
-tag可选5.6或者不填
+tag可选5.6或者8.0.20或者不填
+
+其他操作参考Mysql数据库。
