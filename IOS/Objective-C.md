@@ -4,13 +4,15 @@
 
 ## 1.导包
 
+`import` 是C语言中的 `clude` 的增强版，不会重复导入。
+
 ```objective-c
 #import <Foundation/Foundation.h>
 ```
 
 ## 2.数据结构
 
-相互转化等，数字、字典、集合等等
+相互转化等，数字、字典、集合等等, 注释可以用 `#pragma mark` 。
 
 ### 2.1 基本数据类型
 
@@ -124,6 +126,28 @@ NSMutableDictionary *md = [[NSMutableDictionary alloc]init];
 NSLog(@"md=%@", [md objectForKey:@"10"]);
 [md removeAllObjects];
 ```
+
+**NSString常用方法**
+
+```objc
+// C语言中的字符数组转化成字符串
+char * x = "rose";
+NSString * s = [NSString stringWithUTF8String:x];
+NSLog(@"%@", s);
+// 返回格式化字符串
+NSString * t = [NSString stringWithFormat:@"123%@", @"456"];
+NSLog(@"t=%@", t);
+// 字符串长度，可以处理中文
+NSUInteger length = [t length];
+NSLog(@"length=%lu", length);
+// 判断是否相等,不能用==
+[t isEqualToString:@"1234"];
+// 根据asc码比较大小
+[t isEqualToString:@"1234"];
+NSComparisonResult result = [t compare:@"4321"];
+```
+
+> OC 中的中文占两个字节。
 
 ### 3.9 类型转化
 
@@ -243,7 +267,13 @@ int main () {
 }
 ```
 
+内存五大区域：
 
+- 栈：存储局部变量
+- 堆：手动申请的字节空间，malloc、calloc、realloc
+- BSS段：存储未被初始化的全局变量
+- 数据段：存储常量
+- 代码段：存储代码
 
 ### 4.2 块
 
@@ -294,6 +324,12 @@ int main() {
 
 太TM麻烦了。
 
+新建cocoa class 文件就可以创建头文件和M文件。
+
+数据类型是再内存中开辟空间的模板，类的本质是自定义数据类型，所以可以作为参数和返回值。
+
+`static` 关键字：修饰的对象只初始化一次。
+
 举例：
 
 ```objc
@@ -302,7 +338,7 @@ int main() {
     // Protected instance variables (not recommended)
 }
 // 属性
-@property(nonatomic, readwrite) int x;
+@property(nonatomic, readwrite) int x;	
 // 方法
 - (int)sum: (int)y;
 @end
@@ -334,6 +370,130 @@ int sum = [box sum:10];
 NSLog(@"sum=%d", sum);
 ```
 
+另一种方式：
+
+```objc
+// 声明
+@interface Person : NSObject
+// 属性在大括号里,属性名称必须要以下划线开头
+// 默认情况下不能直接被访问
+{
+    // 如果要被访问则加public
+    @public NSString *_name;
+    @public int _age;
+    float _height;
+}
+// 方法声明
+- (void) run: (int)aa;
+- (void) eat: (NSString *) food;
+- (void)print: (NSString *) x :(NSString *) y;
+@end
+
+
+@implementation Person
+
+// 方法实现，声明去掉分号，追加大括号
+- (void) run: (int)aa {
+    NSLog(@"you run %d kilometers", aa);
+}
+
+- (void)eat:(NSString *)food {
+    NSLog(@"you eat %@", food);
+}
+
+- (void)print: (NSString *) x : (NSString *) y {
+    NSLog(@"x=%@, y=%@", x, y);
+}
+
+@end
+ 
+// 调用
+int main(int argc, const char * argv[]) {
+    // 访问对象的属性
+    Person *p1 = [Person new];
+    p1 -> _name = @"123";
+    p1 -> _age = 14;
+    (*p1)._height = 173.2;
+    [p1 run:321];
+    [p1 eat:@"egg"];
+    [p1 print:@"12.5" :@"-4.3"];
+    return 0;
+}
+```
+
+**类方法(即静态方法)**
+
+一句话：减号变加号。
+
+也要声明和实现。
+
+**构造函数**
+
+规范：和类名同名的类方法。官方所有类都遵循这个规则。
+
+> 发现除了类名方法，还可以用init。
+
+举例：
+
+`Animal.h`
+
+```objc
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Animal : NSObject
+{
+    float _width;
+    float _color;
+}
+
+// 提供一个和类名同名的类方法，返回默认值的对象
++ (Animal *) animal;
+
+// 同样使用with...and...方式，创建自定义对象
++ (Animal *) animalWith: (float) width andColor: (float) color;
+
+// 静态函数，直接用类名调用
++ (void) run;
+
+@end
+
+NS_ASSUME_NONNULL_END
+```
+
+`Animal.m`
+
+```objc
+#import "Animal.h"
+#import <Foundation/Foundation.h>
+
+@implementation Animal
+
++ (Animal *) animal
+{
+    return [Animal new];
+}
+
++ (Animal *) animalWith: (float) width andColor: (float) color
+{
+    Animal *animal = [Animal new];
+    animal->_width = width;
+    animal->_color = color;
+    return animal;
+}
+
++ (void) run
+{
+    NSLog(@"you are running");
+}
+@end
+```
+
+**self**
+
+`self` 是一个指针，在对象方法中指向当前对象，在类方法中指向当前类。
+
 ### 4.4 继承
 
 OC只能有一个基类但允许多级继承。所有类都派生自超类`NSObject`。定义一个类至少要继承 `NSObjcet`。
@@ -343,6 +503,21 @@ OC只能有一个基类但允许多级继承。所有类都派生自超类`NSObj
 ## 5.错误处理
 
 捕获错误
+
+```objc
+@try
+{
+
+}
+@catch(NSException *ex)
+{
+
+}
+@finally
+{
+  
+}
+```
 
 ## 6.异步
 
