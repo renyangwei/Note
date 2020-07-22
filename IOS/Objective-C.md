@@ -494,6 +494,51 @@ NS_ASSUME_NONNULL_END
 
 `self` 是一个指针，在对象方法中指向当前对象，在类方法中指向当前类。
 
+**点语法**
+
+大部分其他编程语言(C、Java等)都是用 `.` 访问对象方法，Object-c  中使用 `[]` 。
+
+当属性拥有 `setter` 和 `getter` 方法的时候，就可以使用 **点语法**。
+
+本质上还是调用 `setter` 和 `getter` 。
+
+因为手动生成  `setter` 和 `getter` 比较麻烦，就可以使用 `@property` 注解自动生成。
+
+举例：
+
+Student.h
+
+```objective-c
+#import <Foundation/Foundation.h>
+
+
+@interface Student : NSObject
+{
+    NSString * _name;
+    
+    int _age;
+}
+
+- (void)setName:(NSString *)name;
+
+- (NSString *)name;
+
+// property 注解可以自动生成 setter 和 getter
+@property int age;
+
+@end
+```
+
+```objective-c
+Student *student = [Student new];
+student.name = @"ren";
+NSString *sname = student.name;
+student.age = 12;
+int sage = student.age;
+```
+
+> XCode4.4版本以后property注解可以自动实现属性的声明、setter和getter声明以及实现。
+
 ### 4.4 继承
 
 OC只能有一个基类但允许多级继承。所有类都派生自超类`NSObject`。定义一个类至少要继承 `NSObjcet`。
