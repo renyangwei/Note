@@ -78,6 +78,9 @@ NSLog(@"%lu", (unsigned long)[ss length]);// 长度
 NSLog(@"append a and b=%@", [ss stringByAppendingFormat:@"0987"]);// 连接，不能用+
 ```
 
+- 当我们使用 `@` 符号创建字符串的时候，该对象存储在数据段。
+- 当内存中创建一个字符串对象后，这个字符串对象就无法更改，重新赋值只是改变了指针变量而已。
+
 ### 2.7 结构体
 
 OC里的 `.` 只在结构体用到，其他是大括号[]。
@@ -266,14 +269,6 @@ int main () {
    return 0;
 }
 ```
-
-内存五大区域：
-
-- 栈：存储局部变量
-- 堆：手动申请的字节空间，malloc、calloc、realloc
-- BSS段：存储未被初始化的全局变量
-- 数据段：存储常量
-- 代码段：存储代码
 
 ### 4.2 块
 
@@ -539,11 +534,103 @@ int sage = student.age;
 
 > XCode4.4版本以后property注解可以自动实现属性的声明、setter和getter声明以及实现。
 
+**初始化**
+
+`Person *p = [Person new]` 完全等价于
+
+`Person *p = [[Person alloc]init]`
+
 ### 4.4 继承
 
 OC只能有一个基类但允许多级继承。所有类都派生自超类`NSObject`。定义一个类至少要继承 `NSObjcet`。
 
 用法估计差不多。
+
+### 4.5 内存管理
+
+内存五大区域：
+
+- 栈：存储局部变量，当局部变量的作用域被执行完后，局部变量会被系统立即回收。
+- 堆：OC对象和C函数手动申请的字节空间，malloc、calloc、realloc，系统不会自动回收，直到程序结束。
+- BSS段：存储未被初始化的全局变量、静态变量，一旦初始化就回收，并转存到数据段中。
+- 数据段：存储初始化后的全局变量、静态变量，直到程序结束才被回收。
+- 代码段：存储代码，程序结束的时候操作系统回收。
+
+#### 4.5.1 引用计数器
+
+每个对象都有一个属性 `retainCount`，类型是 `unsigned long`，8个字节，称之为 **引用计数器**，用来记录当前对象被引用的次数。
+
+默认情况下，创建一个对象，计数器的值就是1。
+
+被引用一次计数器就加1。所谓被引用，就是有指针指向该对象的地址。
+
+当被引用的时候，发送1条retain消息，取消引用的时候发送1条release消息。
+
+计数器的值等于0的时候，系统就会调用对象的 `dealloc` 方法， 回收该对象。
+
+#### 4.5.2 内存管理分类
+
+- MRC：Manual Reference Counting，手动内存管理
+- ARC：Auto Reference Counting，自动内存管理
+
+### 4.6 协议
+
+专门声明方法(不能声明属性，也不能实现方法)，当某个类遵循了这个协议就拥有了这个协议中声明的方法。
+
+**语法**
+
+```
+@protocol 协议名称 <NSObject>
+方法声明
+@end
+```
+
+**声明**
+
+```objc
+#import <Foundation/Foundation.h>
+
+@protocol Animal <NSObject>
+
+-(void) eat;
+
+-(void) sleep;
+
+@end
+```
+
+**遵循协议**
+
+```objc
+#import <Foundation/Foundation.h>
+#import "Animal.h"
+// 导入头文件，遵循即可,不需要再声明
+@interface Dog : NSObject <Animal>
+
+@end
+```
+
+**实现协议的声明**
+
+```objc
+#import "Dog.h"
+
+@implementation Dog {
+
+}
+
+-(void)sleep {
+    NSLog(@"I am sleeping");
+}
+
+- (void)eat {
+    NSLog(@"I am eating");
+}
+
+@end
+```
+
+> 类似Java中的接口。
 
 ## 5.错误处理
 
