@@ -106,7 +106,7 @@ NSLog(@"Book title : %@\n", book.title);
 
 使用`#import <Foundation/Foundation.h>`导入。
 
-**NSArray和NSMutableArray**
+#### 3.8.1 NSArray和NSMutableArray
 
 `NSArray`用于保存不可变对象数组，`NSMutableArray`用于保存可变对象数组。`NSMutableArray` 继承自 `NSArray` 。
 
@@ -118,7 +118,7 @@ NSLog(@"index0=%@", [mutableArr objectAtIndex:0]);
 [mutableArr removeAllObjects];
 ```
 
-**NSDictionary和NSMutableDictionary**
+#### 3.8.2 NSDictionary和NSMutableDictionary
 
 `NSDictionary`用于保存对象的不可变字典，`NSMutableDictionary`用于保存对象的可变字典。`NSMutableDictionary`继承自`NSDictionary` 。
 
@@ -130,7 +130,7 @@ NSLog(@"md=%@", [md objectForKey:@"10"]);
 [md removeAllObjects];
 ```
 
-**NSString常用方法**
+#### 3.8.3 NSString常用方法
 
 ```objc
 // C语言中的字符数组转化成字符串
