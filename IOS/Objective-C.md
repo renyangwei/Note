@@ -4,13 +4,15 @@
 
 ## 1.导包
 
+`import` 是C语言中的 `clude` 的增强版，不会重复导入。
+
 ```objective-c
 #import <Foundation/Foundation.h>
 ```
 
 ## 2.数据结构
 
-相互转化等，数字、字典、集合等等
+相互转化等，数字、字典、集合等等, 注释可以用 `#pragma mark` 。
 
 ### 2.1 基本数据类型
 
@@ -76,6 +78,9 @@ NSLog(@"%lu", (unsigned long)[ss length]);// 长度
 NSLog(@"append a and b=%@", [ss stringByAppendingFormat:@"0987"]);// 连接，不能用+
 ```
 
+- 当我们使用 `@` 符号创建字符串的时候，该对象存储在数据段。
+- 当内存中创建一个字符串对象后，这个字符串对象就无法更改，重新赋值只是改变了指针变量而已。
+
 ### 2.7 结构体
 
 OC里的 `.` 只在结构体用到，其他是大括号[]。
@@ -101,7 +106,7 @@ NSLog(@"Book title : %@\n", book.title);
 
 使用`#import <Foundation/Foundation.h>`导入。
 
-**NSArray和NSMutableArray**
+#### 3.8.1 NSArray和NSMutableArray
 
 `NSArray`用于保存不可变对象数组，`NSMutableArray`用于保存可变对象数组。`NSMutableArray` 继承自 `NSArray` 。
 
@@ -113,7 +118,7 @@ NSLog(@"index0=%@", [mutableArr objectAtIndex:0]);
 [mutableArr removeAllObjects];
 ```
 
-**NSDictionary和NSMutableDictionary**
+#### 3.8.2 NSDictionary和NSMutableDictionary
 
 `NSDictionary`用于保存对象的不可变字典，`NSMutableDictionary`用于保存对象的可变字典。`NSMutableDictionary`继承自`NSDictionary` 。
 
@@ -124,6 +129,28 @@ NSMutableDictionary *md = [[NSMutableDictionary alloc]init];
 NSLog(@"md=%@", [md objectForKey:@"10"]);
 [md removeAllObjects];
 ```
+
+#### 3.8.3 NSString常用方法
+
+```objc
+// C语言中的字符数组转化成字符串
+char * x = "rose";
+NSString * s = [NSString stringWithUTF8String:x];
+NSLog(@"%@", s);
+// 返回格式化字符串
+NSString * t = [NSString stringWithFormat:@"123%@", @"456"];
+NSLog(@"t=%@", t);
+// 字符串长度，可以处理中文
+NSUInteger length = [t length];
+NSLog(@"length=%lu", length);
+// 判断是否相等,不能用==
+[t isEqualToString:@"1234"];
+// 根据asc码比较大小
+[t isEqualToString:@"1234"];
+NSComparisonResult result = [t compare:@"4321"];
+```
+
+> OC 中的中文占两个字节。
 
 ### 3.9 类型转化
 
@@ -243,8 +270,6 @@ int main () {
 }
 ```
 
-
-
 ### 4.2 块
 
 块是C，Objective-C和C++等编程语言中的高级功能，它允许创建不同的代码段，这些代码段可以传递给方法或函数，就像它们是值一样。 块是Objective-C对象，类似于其他编程语言中的闭包或`lambda`。
@@ -294,6 +319,12 @@ int main() {
 
 太TM麻烦了。
 
+新建cocoa class 文件就可以创建头文件和M文件。
+
+数据类型是再内存中开辟空间的模板，类的本质是自定义数据类型，所以可以作为参数和返回值。
+
+`static` 关键字：修饰的对象只初始化一次。
+
 举例：
 
 ```objc
@@ -302,7 +333,7 @@ int main() {
     // Protected instance variables (not recommended)
 }
 // 属性
-@property(nonatomic, readwrite) int x;
+@property(nonatomic, readwrite) int x;	
 // 方法
 - (int)sum: (int)y;
 @end
@@ -334,15 +365,291 @@ int sum = [box sum:10];
 NSLog(@"sum=%d", sum);
 ```
 
+另一种方式：
+
+```objc
+// 声明
+@interface Person : NSObject
+// 属性在大括号里,属性名称必须要以下划线开头
+// 默认情况下不能直接被访问
+{
+    // 如果要被访问则加public
+    @public NSString *_name;
+    @public int _age;
+    float _height;
+}
+// 方法声明
+- (void) run: (int)aa;
+- (void) eat: (NSString *) food;
+- (void)print: (NSString *) x :(NSString *) y;
+@end
+
+
+@implementation Person
+
+// 方法实现，声明去掉分号，追加大括号
+- (void) run: (int)aa {
+    NSLog(@"you run %d kilometers", aa);
+}
+
+- (void)eat:(NSString *)food {
+    NSLog(@"you eat %@", food);
+}
+
+- (void)print: (NSString *) x : (NSString *) y {
+    NSLog(@"x=%@, y=%@", x, y);
+}
+
+@end
+ 
+// 调用
+int main(int argc, const char * argv[]) {
+    // 访问对象的属性
+    Person *p1 = [Person new];
+    p1 -> _name = @"123";
+    p1 -> _age = 14;
+    (*p1)._height = 173.2;
+    [p1 run:321];
+    [p1 eat:@"egg"];
+    [p1 print:@"12.5" :@"-4.3"];
+    return 0;
+}
+```
+
+**类方法(即静态方法)**
+
+一句话：减号变加号。
+
+也要声明和实现。
+
+**构造函数**
+
+规范：和类名同名的类方法。官方所有类都遵循这个规则。
+
+> 发现除了类名方法，还可以用init。
+
+举例：
+
+`Animal.h`
+
+```objc
+#import <Foundation/Foundation.h>
+
+NS_ASSUME_NONNULL_BEGIN
+
+@interface Animal : NSObject
+{
+    float _width;
+    float _color;
+}
+
+// 提供一个和类名同名的类方法，返回默认值的对象
++ (Animal *) animal;
+
+// 同样使用with...and...方式，创建自定义对象
++ (Animal *) animalWith: (float) width andColor: (float) color;
+
+// 静态函数，直接用类名调用
++ (void) run;
+
+@end
+
+NS_ASSUME_NONNULL_END
+```
+
+`Animal.m`
+
+```objc
+#import "Animal.h"
+#import <Foundation/Foundation.h>
+
+@implementation Animal
+
++ (Animal *) animal
+{
+    return [Animal new];
+}
+
++ (Animal *) animalWith: (float) width andColor: (float) color
+{
+    Animal *animal = [Animal new];
+    animal->_width = width;
+    animal->_color = color;
+    return animal;
+}
+
++ (void) run
+{
+    NSLog(@"you are running");
+}
+@end
+```
+
+**self**
+
+`self` 是一个指针，在对象方法中指向当前对象，在类方法中指向当前类。
+
+**点语法**
+
+大部分其他编程语言(C、Java等)都是用 `.` 访问对象方法，Object-c  中使用 `[]` 。
+
+当属性拥有 `setter` 和 `getter` 方法的时候，就可以使用 **点语法**。
+
+本质上还是调用 `setter` 和 `getter` 。
+
+因为手动生成  `setter` 和 `getter` 比较麻烦，就可以使用 `@property` 注解自动生成。
+
+举例：
+
+Student.h
+
+```objective-c
+#import <Foundation/Foundation.h>
+
+
+@interface Student : NSObject
+{
+    NSString * _name;
+    
+    int _age;
+}
+
+- (void)setName:(NSString *)name;
+
+- (NSString *)name;
+
+// property 注解可以自动生成 setter 和 getter
+@property int age;
+
+@end
+```
+
+```objective-c
+Student *student = [Student new];
+student.name = @"ren";
+NSString *sname = student.name;
+student.age = 12;
+int sage = student.age;
+```
+
+> XCode4.4版本以后property注解可以自动实现属性的声明、setter和getter声明以及实现。
+
+**初始化**
+
+`Person *p = [Person new]` 完全等价于
+
+`Person *p = [[Person alloc]init]`
+
 ### 4.4 继承
 
 OC只能有一个基类但允许多级继承。所有类都派生自超类`NSObject`。定义一个类至少要继承 `NSObjcet`。
 
 用法估计差不多。
 
+### 4.5 内存管理
+
+内存五大区域：
+
+- 栈：存储局部变量，当局部变量的作用域被执行完后，局部变量会被系统立即回收。
+- 堆：OC对象和C函数手动申请的字节空间，malloc、calloc、realloc，系统不会自动回收，直到程序结束。
+- BSS段：存储未被初始化的全局变量、静态变量，一旦初始化就回收，并转存到数据段中。
+- 数据段：存储初始化后的全局变量、静态变量，直到程序结束才被回收。
+- 代码段：存储代码，程序结束的时候操作系统回收。
+
+#### 4.5.1 引用计数器
+
+每个对象都有一个属性 `retainCount`，类型是 `unsigned long`，8个字节，称之为 **引用计数器**，用来记录当前对象被引用的次数。
+
+默认情况下，创建一个对象，计数器的值就是1。
+
+被引用一次计数器就加1。所谓被引用，就是有指针指向该对象的地址。
+
+当被引用的时候，发送1条retain消息，取消引用的时候发送1条release消息。
+
+计数器的值等于0的时候，系统就会调用对象的 `dealloc` 方法， 回收该对象。
+
+#### 4.5.2 内存管理分类
+
+- MRC：Manual Reference Counting，手动内存管理
+- ARC：Auto Reference Counting，自动内存管理
+
+### 4.6 协议
+
+专门声明方法(不能声明属性，也不能实现方法)，当某个类遵循了这个协议就拥有了这个协议中声明的方法。
+
+**语法**
+
+```
+@protocol 协议名称 <NSObject>
+方法声明
+@end
+```
+
+**声明**
+
+```objc
+#import <Foundation/Foundation.h>
+
+@protocol Animal <NSObject>
+
+-(void) eat;
+
+-(void) sleep;
+
+@end
+```
+
+**遵循协议**
+
+```objc
+#import <Foundation/Foundation.h>
+#import "Animal.h"
+// 导入头文件，遵循即可,不需要再声明
+@interface Dog : NSObject <Animal>
+
+@end
+```
+
+**实现协议的声明**
+
+```objc
+#import "Dog.h"
+
+@implementation Dog {
+
+}
+
+-(void)sleep {
+    NSLog(@"I am sleeping");
+}
+
+- (void)eat {
+    NSLog(@"I am eating");
+}
+
+@end
+```
+
+> 类似Java中的接口。
+
 ## 5.错误处理
 
 捕获错误
+
+```objc
+@try
+{
+
+}
+@catch(NSException *ex)
+{
+
+}
+@finally
+{
+  
+}
+```
 
 ## 6.异步
 
