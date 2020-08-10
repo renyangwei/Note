@@ -162,6 +162,63 @@ NSComparisonResult result = [t compare:@"4321"];
 
 `NSInteger *i = [{NSInteger} intValue]; `
 
+**字典转模型**
+
+定义：
+
+```objc
+#import "Teacher.h"
+
+@implementation Teacher {
+
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super init]) {
+        [self setValuesForKeysWithDictionary:dict];
+    }
+    return self;
+}
+
++ (instancetype)provinceWithDictionary:(NSDictionary *)dict {
+    return [[self alloc] initWithDictionary:dict];
+}
+
+@end
+```
+
+```objc
+#import "Teacher.h"
+
+@implementation Teacher {
+
+}
+
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super init]) {
+        // 核心方法
+        [self setValuesForKeysWithDictionary:dict];
+    }
+    return self;
+}
+
++ (instancetype)provinceWithDictionary:(NSDictionary *)dict {
+    return [[self alloc] initWithDictionary:dict];
+}
+
+@end
+```
+
+调用：
+
+```objc
+NSDictionary *temDic = @{@"name": @"July", @"color": @"white"};
+Teacher *model = [Teacher provinceWithDictionary:temDic];
+NSLog(@"name=%@, color=%@", model.name, model.color);
+```
+
+
+
 ## 3.算法
 
 ### 3.1 运算符
