@@ -173,3 +173,13 @@ public class MainActivity extends AppCompatActivity {
 }
 ```
 
+## 5. 指定ndk编译的abi
+
+```groovy
+defaultConfig {
+    ndk {
+        abiFilters "armeabi", "armeabi-v7a", "x86"
+    }
+}
+```
+

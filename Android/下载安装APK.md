@@ -180,9 +180,93 @@ public static boolean writeFileToSDCard(String filePath, ResponseBody body) {
 
 ## 安装APK
 
+参考 [Android 6.0 7.0 8.0三个版本Install Apk 采坑记录](https://juejin.im/post/5ad4499a6fb9a028b617fc1c)
+
 在6.0、 7.0、 8.0上处理各有不同。
 
 6.0之前比较随意，没有什么要求；7.0添加了提高了私有文件的安全性 `FileProvider`；8.0 新增了权限。
+
+### 7.0 的 fileProvider
+
+在 AndroidManifest.xml 文件声明：
+
+```xml
+<provider
+            android:name="android.support.v4.content.FileProvider"
+            android:authorities="{包名}.fileprovider"
+            android:exported="false"
+            android:grantUriPermissions="true">
+            <meta-data
+                android:name="android.support.FILE_PROVIDER_PATHS"
+                android:resource="@xml/file_paths"/>
+</provider>
+```
+
+- `name`：v4包，也可以是androidx包里的
+- `resource`：设置FileProvider访问的文件路径
+
+首先我们在res文件下面创建一个xml文件夹,然后再xml中创建一个manifest中声明的文件 **file_paths.xml** 。这个名字看你自己定义的，但是必须和AndroidManifest.xml中声明的一致：
+
+```xml
+<?xml version="1.0" encoding="utf-8"?>
+<paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <root-path
+        name="root"
+        path="" />
+    <files-path
+        name="files"
+        path="." />
+
+    <cache-path
+        name="cache"
+        path="." />
+
+    <external-path
+        name="external"
+        path="." />
+
+    <external-files-path
+        name="external_file_path"
+        path="." />
+    <external-cache-path
+        name="external_cache_path"
+        path="." />
+
+</paths>
+```
+
+### 8.0的权限
+
+8.0上主要是权限问题，在 AndroidManifest.xml 里声明权限即可：
+
+```xml
+<uses-permission android:name="android.permission.REQUEST_INSTALL_PACKAGES"/>
+```
+
+### 安装代码
+
+```java
+private void installApk(String filepath) {
+		LogUtil.d("开始安装");
+		File apk = new File(filepath);
+		Intent intent = new Intent(Intent.ACTION_VIEW);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		String packageName = SDKDYB.getInstance().getContext().getPackageName();
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N){
+		    intent.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		    Uri uri = FileProvider.getUriForFile(this, packageName + ".fileprovider", apk);
+		    intent.setDataAndType(uri, "application/vnd.android.package-archive");
+		}else{
+		    intent.setDataAndType(Uri.fromFile(apk),"application/vnd.android.package-archive");
+		}
+		try {
+		    startActivity(intent);
+		}catch(Exception e){
+		    e.printStackTrace();
+		    LogUtil.e("安装失败：" + e.getMessage());
+		}
+	}
+```
 
 
 
