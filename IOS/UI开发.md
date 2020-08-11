@@ -251,6 +251,8 @@ label.layer.masksToBounds = YES;
 @property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
 @property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
 
+@property (nonatomic, strong) NSTimer *timer;
+
 @end
 
 @implementation ScrollViewController
@@ -283,6 +285,12 @@ label.layer.masksToBounds = YES;
     self.pageControl.numberOfPages = 4;
     // 当前页
     self.pageControl.currentPage = 0;
+    
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerBlock) userInfo:nil repeats:YES];
+    // 修改timer的优先级,使其与控件相同
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    [runLoop addTimer:self.timer forMode:NSRunLoopCommonModes];
+    
 }
 
 // 计算当前滚动到了第几页
@@ -293,6 +301,33 @@ label.layer.masksToBounds = YES;
     offsetX += scrollView.frame.size.width / 2;
     self.pageControl.currentPage = offsetX / scrollView.frame.size.width;
 }
+
+- (void) scrollViewWillBeginDragging:(UIScrollView *)scrollView {
+    // 停止计时器,下次必须重新创建新对象
+    [self.timer invalidate];
+    // 指向nil方便判断
+    self.timer = nil;
+}
+
+- (void) scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
+    // 重新开启计时器
+    self.timer = [NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerBlock) userInfo:nil repeats:YES];
+    // 修改timer的优先级,使其与控件相同
+    NSRunLoop *runLoop = [NSRunLoop currentRunLoop];
+    [runLoop addTimer:self.timer forMode:NSRunLoopCommonModes];
+}
+
+- (void) timerBlock {
+    NSInteger page = self.pageControl.currentPage;
+    if (page == self.pageControl.numberOfPages - 1) {
+        page = 0;
+    } else {
+        page++;
+    }
+    CGFloat offsetX = page * self.scrollView.frame.size.width;
+    [self.scrollView setContentOffset:CGPointMake(offsetX, 0) animated:YES];
+}
+
 @end
 ```
 
