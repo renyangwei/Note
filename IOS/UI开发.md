@@ -242,11 +242,23 @@ label.layer.masksToBounds = YES;
 
 ## 10. 轮播图
 
-也用到 `UIScorllView` 。
+用到 `UIScorllView` 和 `UIPageControl` 。
 
 ```objc
+#import "ScrollViewController.h"
+
+@interface ScrollViewController () <UIScrollViewDelegate>
+@property (weak, nonatomic) IBOutlet UIScrollView *scrollView;
+@property (weak, nonatomic) IBOutlet UIPageControl *pageControl;
+
+@end
+
+@implementation ScrollViewController
+
 - (void)viewDidLoad {
     [super viewDidLoad];
+    
+    self.scrollView.delegate = self;
     CGFloat imgW = 343;
     CGFloat imgH = 130;
     CGFloat imgY = 0;
@@ -264,6 +276,23 @@ label.layer.masksToBounds = YES;
     self.scrollView.contentSize = CGSizeMake(imgW*4, imgH);
     // 实现分页效果
     self.scrollView.pagingEnabled = YES;
+    // 隐藏水平滚动器
+    self.scrollView.showsHorizontalScrollIndicator = NO;
+    
+    // 总页数
+    self.pageControl.numberOfPages = 4;
+    // 当前页
+    self.pageControl.currentPage = 0;
 }
+
+// 计算当前滚动到了第几页
+- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
+    // x轴偏移量
+    CGFloat offsetX = scrollView.contentOffset.x;
+    // 加上一半的宽度
+    offsetX += scrollView.frame.size.width / 2;
+    self.pageControl.currentPage = offsetX / scrollView.frame.size.width;
+}
+@end
 ```
 
