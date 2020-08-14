@@ -203,7 +203,7 @@ label.layer.masksToBounds = YES;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // 设置代理
-    self.scrollView.delegate = self;
+    self.scrollView.delegatae = self;
     // 设置大小
     self.scrollView.contentSize = self.imageView.frame.size;
   	// 设置缩放
@@ -326,6 +326,71 @@ label.layer.masksToBounds = YES;
     }
     CGFloat offsetX = page * self.scrollView.frame.size.width;
     [self.scrollView setContentOffset:CGPointMake(offsetX, 0) animated:YES];
+}
+
+@end
+```
+
+## 11. 启动页
+
+启动页其实就是系统截屏后显示的图片。
+
+## 12. UITableView
+
+和Android差不多。
+
+1. 创建 `UITableView` ；
+2. 设置 `DataSource` ，重写方法；
+3. 创建 `UITableViewCell` ，可通过xib，设置数据
+
+```objc
+#import "ViewController.h"
+
+@interface ViewController () <UITableViewDataSource>
+  
+@property (weak, nonatomic) IBOutlet UITableView *uiTableView;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    // 设置 dataSource
+    self.uiTableView.dataSource = self;
+}
+
+// 组的数量
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
+    return 2;
+}
+
+// 每一组显示多少行
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section {
+    return 5;
+}
+
+// 返回单元格控件
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
+    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@""];
+    cell.textLabel.text = [NSString stringWithFormat:@"hello%ld", (long)indexPath.row];
+    return cell;
+}
+
+// 每组的标题，类似页眉
+// 如果重写了改方法，但是UITableView的style设置为plain，标题会类似联系人固定在屏幕上
+- (NSString *)tableView:(UITableView *)tableView titleForHeaderInSection:(NSInteger)section {
+    return @"header";
+}
+
+// 每组尾部说明，类似页脚
+- (NSString *)tableView:(UITableView *)tableView titleForFooterInSection:(NSInteger)section {
+    return @"footer";
+}
+
+// 隐藏状态栏
+- (BOOL)prefersStatusBarHidden {
+    return YES;
 }
 
 @end

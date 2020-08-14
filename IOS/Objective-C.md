@@ -175,27 +175,6 @@ NSComparisonResult result = [t compare:@"4321"];
 
 - (instancetype)initWithDictionary:(NSDictionary *)dict {
     if (self = [super init]) {
-        [self setValuesForKeysWithDictionary:dict];
-    }
-    return self;
-}
-
-+ (instancetype)provinceWithDictionary:(NSDictionary *)dict {
-    return [[self alloc] initWithDictionary:dict];
-}
-
-@end
-```
-
-```objc
-#import "Teacher.h"
-
-@implementation Teacher {
-
-}
-
-- (instancetype)initWithDictionary:(NSDictionary *)dict {
-    if (self = [super init]) {
         // 核心方法
         [self setValuesForKeysWithDictionary:dict];
     }
