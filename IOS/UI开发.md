@@ -345,10 +345,12 @@ label.layer.masksToBounds = YES;
 
 ```objc
 #import "ViewController.h"
+#import "CZHero.h"
 
-@interface ViewController () <UITableViewDataSource>
-  
+
+@interface ViewController () <UITableViewDataSource, UITableViewDelegate> // 遵循多个协议
 @property (weak, nonatomic) IBOutlet UITableView *uiTableView;
+@property (nonatomic, strong) CZHero *hero;
 
 @end
 
@@ -357,8 +359,29 @@ label.layer.masksToBounds = YES;
 - (void)viewDidLoad {
     [super viewDidLoad];
     // 设置 dataSource
+    self.uiTableView.delegate = self;
     self.uiTableView.dataSource = self;
+    // 设置行高,如果要设置每行不同高度，则实现 UITableViewDelegate 协议
+    self.uiTableView.rowHeight = 60;
+    //设置分割线
+    self.uiTableView.separatorStyle = UITableViewCellSeparatorStyleSingleLine;
+    self.uiTableView.separatorColor = UIColor.brownColor;
+    // 还可以设置header View 和footer View，前者可以放广告，后者可以加载更多
+ 	  self.uiTableView.tableHeaderView = [HeaderView headerView];
+  	// 滑动到特定行
+    [self.uiTableView scrollToRowAtIndexPath:[NSIndexPath indexPathWithIndex:5] atScrollPosition:UITableViewScrollPositionBottom animated:YES];
 }
+
+
+// 数据懒加载
+- (CZHero *)hero {
+    if (_hero == nil) {
+        NSMutableDictionary *d1 = [@{@"icon": @"dsdd", @"name": @"亚索", @"slogan": @"我的剑就是你的剑"} mutableCopy];
+        _hero = [CZHero heroWithDictionary:d1];
+    }
+    return _hero;
+}
+
 
 // 组的数量
 - (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView {
@@ -372,8 +395,16 @@ label.layer.masksToBounds = YES;
 
 // 返回单元格控件
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath {
-    UITableViewCell *cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:@""];
-    cell.textLabel.text = [NSString stringWithFormat:@"hello%ld", (long)indexPath.row];
+    // 单元格重用，去缓存池查找，没有就创建，尽管@"hero_cell"在常量区，加上static后字符串变成常量，不会重复创建resId变量
+    static NSString *resId = @"hero_cell";
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:resId];
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleSubtitle reuseIdentifier:resId];
+    }
+    cell.textLabel.text = self.hero.name;
+    cell.detailTextLabel.text = self.hero.slogan;
+    // 单元格设置箭头，还有其他图案，比如checkbox
+    cell.accessoryType = UITableViewCellAccessoryDisclosureIndicator;
     return cell;
 }
 
@@ -393,6 +424,91 @@ label.layer.masksToBounds = YES;
     return YES;
 }
 
+// 设置右侧的索引栏
+- (NSArray<NSString *> *)sectionIndexTitlesForTableView:(UITableView *)tableView {
+    return @[@"A", @"B", @"C", @"D"];
+}
+
+// 监听被单击的单元格
+- (void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath {
+  	// 弹窗
+    UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"My Alert"
+                                                                   message:@"This is an alert."
+                                                            preferredStyle:UIAlertControllerStyleAlert];
+    UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        NSLog(@"you input:%@", alert.textFields[0].text);
+        self.hero.slogan = alert.textFields[0].text;
+        // 重新加载全部数据
+        // [tableView reloadData];
+        // 加载要修改的行，只适用于总行数不变的情况
+        [tableView reloadRowsAtIndexPaths:@[indexPath] withRowAnimation:UITableViewRowAnimationAutomatic];
+    }];
+    [alert addAction:defaultAction];
+    [alert addTextFieldWithConfigurationHandler:^(UITextField *textField){
+        textField.text = @"请输入要修改的内容";
+    }];
+    [self presentViewController:alert animated:YES completion:nil];
+}
+
+
 @end
+```
+
+```objc
+#import "CZHero.h"
+
+@implementation CZHero
+
+// 字典转对象
+- (instancetype)initWithDictionary:(NSDictionary *)dict {
+    if (self = [super init]) {
+        [self setValuesForKeysWithDictionary:dict];
+    }
+    return self;
+}
+
++ (instancetype)heroWithDictionary:(NSDictionary *)dict {
+    return [[self alloc] initWithDictionary:dict];
+}
+
+
+@end
+```
+
+设置 `HeaderView`
+
+先设置xib文件，然后创建并关联到UiView，获取对象。
+
+```objc
+#import "HeaderView.h"
+
+@interface HeaderView()
+@property (weak, nonatomic) IBOutlet UIImageView *imageView;
+
+@end
+
+@implementation HeaderView
+
++ (instancetype) headerView {
+    HeaderView * head = [[[NSBundle mainBundle]loadNibNamed:@"HeaderView" owner:self options:nil] firstObject];
+    return head;
+}
+
+// 表示已经加载好，可以处理控件
+- (void)awakeFromNib {
+    [super awakeFromNib];
+    [self.imageView setHighlighted:YES];
+}
+
+@end
+```
+
+## 13. 延迟函数
+
+```objc
+// 延迟3秒
+dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), dispatch_get_main_queue(), ^{
+    // 要执行的代码
+});
 ```
 
