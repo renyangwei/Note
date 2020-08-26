@@ -419,9 +419,15 @@ label.layer.masksToBounds = YES;
     return @"footer";
 }
 
-// 隐藏状态栏
+// 隐藏状态栏例；-0
+
 - (BOOL)prefersStatusBarHidden {
     return YES;
+}
+
+- (UIView *)tableView:(UITableView *)tableView viewForHeaderInSection:(NSInteger)section {
+    // 这里用UITableViewHeaderFooterView可以重用
+    return [[UITableViewHeaderFooterView alloc]init];
 }
 
 // 设置右侧的索引栏
@@ -511,4 +517,92 @@ dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(3 * NSEC_PER_SEC)), di
     // 要执行的代码
 });
 ```
+
+## 14. 通知
+
+```objc
+#import <UIKit/UIKit.h>
+#import "NotificationSender.h"
+#import "NotificationListener.h"
+
+int main(int argc, char * argv[]) {
+    @autoreleasepool {
+        // 创建发布者,普通的类，继承NSObject
+        NotificationSender *sender1 = [[NotificationSender alloc] init];
+        // 创建监听者,普通的类，继承NSObject
+        NotificationListener *listener1 = [[NotificationListener alloc] init];
+        // 创建通知
+        NSNotificationCenter *notificationCenter = [NSNotificationCenter defaultCenter];
+        // 监听通知，监听者对象、对象方法、通知和发布者
+        // 如果名称写nil，那么表示监听sender1所有的通知
+        // 如果参数四为nil，表示监听所有发布者的通知
+        [notificationCenter addObserver:listener1 selector:@selector(m1:) name:@"myname" object:sender1];
+        // 发布通知
+        [notificationCenter postNotificationName:@"myname" object:sender1 userInfo:@{@"name":@"James", @"age": @"34"}];
+        // 移除通知放到对象的回收函数里
+    }
+    return 0;
+}
+```
+
+```objc
+#import "NotificationListener.h"
+
+@implementation NotificationListener
+
+// 参数必须是NSNotification，NSString，或者没有参数，其他的会闪退
+- (void)m1:(NSNotification *)notification {
+    NSLog(@"duang...");
+    // 接收的参数
+    NSLog(@"userInfo=%@", [notification userInfo]);
+}
+
+- (void)dealloc {
+    // 对象回收的时候移出通知
+    [[NSNotificationCenter defaultCenter] removeObserver:self];
+}
+
+@end
+```
+
+> 本质上就是利用反射，调用某个类的方法，不过封装成了通知中心。
+
+## 15. 监听键盘事件
+
+1. 设置代理 `UITextFieldDelegate`；
+2. 实现代理方法。
+
+> 在IOS中，监听控件事件用delegate，在Android中使用listener。
+
+举例：
+
+```objc
+- (void)viewDidAppear:(BOOL)animated {
+   // 监听键盘事件
+   NSNotificationCenter *center = [NSNotificationCenter defaultCenter];
+   [center addObserver:self selector:@selector(keyboard:) name:UIKeyboardWillChangeFrameNotification object:nil];
+}
+
+- (void) keyboard: (NSNotification *) notification {
+    // 获取监听消息
+    NSLog(@"通知名称:%@", notification.name);
+    NSLog(@"发布者:%@", notification.object);
+    NSLog(@"消息:%@", notification.userInfo);
+
+    // 将View随键盘滑动，始终在键盘上方
+    CGRect rect = [notification.userInfo[UIKeyboardFrameEndUserInfoKey] CGRectValue];
+    CGFloat keyboardY = rect.origin.y;
+    CGFloat  transformValue = keyboardY - self.view.frame.size.height;
+    // 还可以设置动画，0.25秒，这样可以和键盘动画保持一致
+    self.view.transform = CGAffineTransformMakeTranslation(0, transformValue);
+}
+
+// 当按下return时被调用
+- (BOOL)textFieldShouldReturn:(UITextField *)textField {
+  	// 这里可以做发送操作
+    return YES;
+}
+```
+
+## 16. Autolayout自动布局
 
