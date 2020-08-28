@@ -606,3 +606,11 @@ int main(int argc, char * argv[]) {
 
 ## 16. Autolayout自动布局
 
+可以理解为Android中的 `constraintLayout` （约束布局），添加相对于其他控件的约束。只要设置了控件的相对位置和宽高就行。
+
+IOS中还有一个叫 `StackView` 的布局，和Android中的 `LinnearLayout` 用法基本一致，用于设置内部控件的排序方式。
+
+需要注意的地方：
+
+1. 可以选中多个控件，设置为等高或者等宽，这样系统会自动判断控件高或者宽，从而不需要自己指定。
+2. 
