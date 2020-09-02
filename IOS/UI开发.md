@@ -613,4 +613,121 @@ IOS中还有一个叫 `StackView` 的布局，和Android中的 `LinnearLayout` �
 需要注意的地方：
 
 1. 可以选中多个控件，设置为等高或者等宽，这样系统会自动判断控件高或者宽，从而不需要自己指定。
-2. 
+
+## 17. UIDatePicker 日期选择
+
+一般日期选择都以下方弹窗的形式展现。思路是先设置 `Toolbar` 和 `DatePicker`  ，然后将前者设置为 `UITextField` 的 inputAccessoryView，后者设置为 `UITextField` 的  inputView。
+
+举例：
+
+```objc
+//
+//  ViewController.m
+//  Autolayout
+//
+//  Created by dyb on 2020/8/26.
+//  Copyright © 2020 ren. All rights reserved.
+//
+
+#import "ViewController.h"
+
+
+@interface ViewController () <UITextFieldDelegate>
+@property (weak, nonatomic) IBOutlet UITextField *textField;
+
+// 懒加载控件用 strong
+@property (strong, nonatomic) UIDatePicker *datePicker;
+
+@property (strong, nonatomic) UIToolbar *toolbar;
+
+@end
+
+@implementation ViewController
+
+- (void)viewDidLoad {
+    [super viewDidLoad];
+    self.textField.inputView = self.datePicker;
+    self.textField.inputAccessoryView = self.toolbar;
+}
+
+#pragma mark - 懒加载datePicker
+- (UIDatePicker *)datePicker {
+    if (_datePicker == nil) {
+        // 不需要设置frame，默认占据键盘位置
+        _datePicker = [[UIDatePicker alloc]init];
+        [_datePicker setDatePickerMode:UIDatePickerModeDate];
+        // 设置为中文
+        [_datePicker setLocale: [NSLocale  localeWithLocaleIdentifier:@"zh-Hans"]];
+    }
+    return _datePicker;
+}
+
+#pragma mark - 懒加载toolbar
+- (UIToolbar *)toolbar {
+    if (_toolbar == nil) {
+        _toolbar = [[UIToolbar alloc]init];
+        // 只需要设置高度
+        [_toolbar setBounds:CGRectMake(0, 0, 0, 40)];
+        UIBarButtonItem *cancelItem = [[UIBarButtonItem alloc]initWithTitle:@"取消" style:UIBarButtonItemStylePlain target:self action:@selector(cancel)];
+        
+        UIBarButtonItem *flexItem = [[UIBarButtonItem alloc]initWithBarButtonSystemItem:UIBarButtonSystemItemFlexibleSpace target:self action:nil];
+        
+        UIBarButtonItem *sureItem = [[UIBarButtonItem alloc]initWithTitle:@"完成" style:UIBarButtonItemStylePlain target:self action:@selector(sure)];
+        
+        NSArray *array = @[cancelItem, flexItem, sureItem];
+        [_toolbar setItems:array];
+    }
+    return _toolbar;
+}
+
+
+- (void) cancel {
+    NSLog(@"you click canncel");
+    [self.textField endEditing:YES];
+}
+
+- (void) sure {
+   NSLog(@"you click sure");
+   // 格式化日期
+   NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+   [formatter setDateFormat:@"yyyy-MM-dd"];
+   NSString *dateString = [formatter stringFromDate:[self.datePicker date]];
+   NSLog(@"dateString=%@", dateString);
+   // 显示日期
+   self.textField.text = dateString;
+   // 让选择器消失
+   [self.textField endEditing:YES];
+}
+
+@end
+```
+
+## 18. 日期转化
+
+```objc
+// 日期转字符串
+NSDateFormatter *formatter = [[NSDateFormatter alloc] init];
+[formatter setDateFormat:@"yyyy-MM-dd HH-mm-ss"];
+NSString *dateString = [formatter stringFromDate:[[NSDate alloc] init]];
+NSLog(@"dateString=%@", dateString);
+// 字符串转日期
+NSDateFormatter *formatter1 = [[NSDateFormatter alloc] init];
+[formatter1 setDateFormat:@"yyyy-MM-dd"];
+NSDate *date = [formatter1 dateFromString:@"2020-05-30"];
+```
+
+## 19. 获取项目的plist文件内容
+
+```objc
+NSDictionary *dic = [NSBundle mainBundle].infoDictionary;
+NSLog(@"%@", dic);
+```
+
+## 20. pch文件
+
+用来导入很多地方用到的常用的类和宏。有点像全局变量。
+
+在 *Build Settings* -> *Prefix Header* 设置文件即可。
+
+## 21. Application类
+
