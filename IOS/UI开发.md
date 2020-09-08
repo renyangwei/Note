@@ -729,5 +729,137 @@ NSLog(@"%@", dic);
 
 在 *Build Settings* -> *Prefix Header* 设置文件即可。
 
+很常用。
+
 ## 21. Application类
+
+```objc
+// 设置应用上小红点数字
+UIApplication *application = [UIApplication sharedApplication];
+application.applicationIconBadgeNumber = 10;
+```
+
+其他以后再补充。
+
+## 22. 通知
+
+**申请权限**
+
+```objc
+//进行用户权限的申请
+[[UNUserNotificationCenter currentNotificationCenter] requestAuthorizationWithOptions:UNAuthorizationOptionBadge|UNAuthorizationOptionSound|UNAuthorizationOptionAlert|UNAuthorizationOptionCarPlay completionHandler:^(BOOL granted, NSError * _Nullable error) {
+          //在block中会传入布尔值granted，表示用户是否同意
+          if (granted) {
+                //如果用户权限申请成功，设置通知中心的代理
+                [UNUserNotificationCenter currentNotificationCenter].delegate = self;
+          }
+    }];
+```
+
+**发送通知**
+
+```objc
+//通知内容类
+    UNMutableNotificationContent * content = [UNMutableNotificationContent new];
+    //设置通知请求发送时 app图标上显示的数字
+    content.badge = @2;
+    //设置通知的内容
+    content.body = @"这是iOS10的新通知内容：普通的iOS通知";
+    //默认的通知提示音
+    content.sound = [UNNotificationSound defaultSound];
+    //设置通知的副标题
+    content.subtitle = @"这里是副标题";
+    //设置通知的标题
+    content.title = @"这里是通知的标题";
+    //设置从通知激活app时的launchImage图片
+    content.launchImageName = @"lun";
+    //设置5S之后执行
+    UNTimeIntervalNotificationTrigger * trigger = [UNTimeIntervalNotificationTrigger triggerWithTimeInterval:5 repeats:NO];
+    UNNotificationRequest * request = [UNNotificationRequest requestWithIdentifier:@"NotificationDefault" content:content trigger:trigger];
+    //添加通知请求
+    [[UNUserNotificationCenter currentNotificationCenter] addNotificationRequest:request withCompletionHandler:^(NSError * _Nullable error) {
+        NSLog(@"%@", error);
+    }];
+```
+
+## 23.weak和strong区别
+
+使用 `weak` 修饰，当这个子视图被移除的时候就可以被销毁，即没有被引用，能够及时释放内存。
+
+使用 `strong` 修饰，相当于有两个指针指向同一个控件，被移除的之后无法释放。
+
+> 本人估计一个控制器本身，一个属性，两个指针。
+
+**懒加载控件为什么用strong**
+
+控件作为属性必须用 `strong` 。
+
+## 24. 自定义启动控制器
+
+```objc
+- (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {
+    // Override point for customization after application launch.
+    // 加载自定义控制器
+    // 1.创建窗口并指定大小
+    self.window = [[UIWindow alloc]initWithFrame:[UIScreen mainScreen].bounds];
+    // 2.设置根控制器
+    MyViewController *myController = [[MyViewController alloc]init];
+    self.window.rootViewController = myController;
+    // 3.将窗口作为应用程序的主窗口
+    [self.window makeKeyAndVisible];
+    return YES;
+}
+```
+
+## 25. 导航控制器
+
+1. 在 `Main.stroryboard` 中拖入一个 `Navigation Controller` ；
+2. 设置其根控制器；
+3. 设置根控制器中要跳转的按钮的 `Action Segues` ，选择 `show` 即跳转；
+4. 返回控制器也是使用 `NavigaionController` ，参考以下代码。
+
+```objc
+// 返回到上一个控制器
+[self.navigationController popViewControllerAnimated:YES];
+// 返回到指定控制器
+NSArray *arr = self.navigationController.viewControllers;
+[self.navigationController popToViewController:arr[0] animated:YES];
+```
+
+### 25.1 自定义导航栏
+
+首先要了解导航栏的层级关系，`navigationController`  -> `navigationBar` -> `navigationItem` 。
+
+`navigationBar` 可以控制背景，`navigationItem` 有三个子视图可以控制：`leftBarButtonItem` ， `rightBarButtonItem` ，以及 `titleView`。
+
+如果自定义了 `leftBarButtonItem` ，系统的返回按钮不显示，这样就能自定义返回键了。
+
+思路：不隐藏navigationBar，然后将自定义的View添加到titleView上，将navigationBar背景颜色调整为和自定义View一样。
+
+举例：
+
+```objc
+self.navigationController.navigationBarHidden = NO;
+    HeaderView *headerView = [[[NSBundle mainBundle] loadNibNamed:@"HeaderView" owner:nil options:nil]lastObject];
+    headerView.frame = CGRectMake(0, 20, kScreenW, 44);
+    self.navigationController.navigationBar.translucent = NO;
+    self.navigationItem setHidesBackButton = YES;
+    //navigationBar颜色与headerView颜色相同
+    self.navigationController.navigationBar.backgroundColor = [UIColor whiteColor];
+    self.navigationItem.titleView = headerView;
+```
+
+### 25.2 跳转传值
+
+通过 storyboard 拖线的方式会调用 `prepareForSegue` 方法，可以在这个方法里获取跳转的控制器实例。
+
+举例：
+
+```objc
+- (void)prepareForSegue:(UIStoryboardSegue *)segue sender:(id)sender {
+    NSString *text = @"hahah";
+    SecondViewController *secondViewController = segue.destinationViewController;
+    secondViewController.navigationItem.title = text;
+}
+```
 
