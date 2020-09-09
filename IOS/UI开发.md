@@ -863,3 +863,91 @@ self.navigationController.navigationBarHidden = NO;
 }
 ```
 
+## 26. 弹窗
+
+### 26.1 UIAlertController
+
+带按钮和输入框的弹窗。
+
+```objc
+// 创建对象
+UIAlertController* alert = [UIAlertController alertControllerWithTitle:@"My Alert"                                                                 message:@"This is an alert." preferredStyle:UIAlertControllerStyleAlert];
+// 添加按钮
+UIAlertAction* defaultAction = [UIAlertAction actionWithTitle:@"OK" style:UIAlertActionStyleDefault handler:^(UIAlertAction * action) {
+        NSLog(@"you input:%@", alert.textFields[0].text);
+    }];
+[alert addAction:defaultAction];
+// 添加输入框
+[alert addTextFieldWithConfigurationHandler:^(UITextField *textField){
+        textField.text = @"请输入要修改的内容";
+    }];
+// 显示
+[self presentViewController:alert animated:YES completion:nil];
+```
+
+`preferredStyle`  选择 `UIAlertControllerStyleActionSheet` 时是从下往上的弹窗。
+
+### 26.2 ProgressDialog
+
+菊花进度弹窗，没有交互。
+
+建议使用 [MBProgressHUD](https://github.com/jdg/MBProgressHUD) 。
+
+## 27. 应用沙盒结构分析
+
+![文件目录](../assets/sandbox.png)
+
+
+
+| 路径                  | 描述                                                         | iTunes备份 | 举例                       |
+| --------------------- | ------------------------------------------------------------ | ---------- | -------------------------- |
+| `Documents`           | 保存应用运行时生成的需要持久化的数据                         | 是         | 游戏存档，聊天记录、音乐等 |
+| `Library/Caches`      | 存放缓存文件                                                 | 否         | 新闻                       |
+| `Library/Preferences` | 保存应用程序的所有偏好设置                                   | 是         | 各个程序的偏好设置         |
+| `tmp`                 | 临时文件目录，在程序重新运行、开机或者充电的时候，会清空tmp文件夹 | 否         | 更新产生的文件             |
+| `SystemData`          | 存放系统数据                                                 | 否         | 无                         |
+
+**获取方法**
+
+```objc
+    // Home目录
+    NSString *homeDir = NSHomeDirectory();
+    NSLog(@"%@", homeDir);
+    // Documents目录
+    NSString *docDir = NSSearchPathForDirectoriesInDomains(NSDocumentDirectory, NSUserDomainMask, YES).firstObject;
+    NSLog(@"%@", docDir);
+    // 拼接文件
+    NSString *filePath = [docDir stringByAppendingPathComponent:@"xx.plist"];
+    // 写入内容
+    NSString *content = @"dfasdfas";
+    [content writeToFile:filePath atomically:YES encoding:NSUTF8StringEncoding error:nil];
+    // 读取内容
+    NSString *get = [NSString stringWithContentsOfFile:filePath encoding:NSUTF8StringEncoding error:nil];
+    NSLog(@"get content=%@", get);
+
+    // 获取Library文件路径
+    NSString *libPath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)firstObject];
+    [libPath stringByAppendingPathComponent:@"test.txt"];
+    // Library/Caches
+    NSString *cachesPath = [NSSearchPathForDirectoriesInDomains(NSCachesDirectory, NSUserDomainMask, YES)firstObject];
+    [cachesPath stringByAppendingPathComponent:@"test.txt"];
+    // Library/Preferences
+    NSString *prePath = [NSSearchPathForDirectoriesInDomains(NSLibraryDirectory, NSUserDomainMask, YES)firstObject];
+    [prePath stringByAppendingPathComponent:@"Preferences"];
+
+    // tmp
+    NSString *tempPath = NSTemporaryDirectory();
+    [tempPath stringByAppendingPathComponent:@"test.txt"];
+```
+
+## 28. 保存偏好设置
+
+```objc
+// 直接设置到Library/Preferences，文件名就是bundleID
+NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
+[ud setInteger:1 forKey:@"DKK"];
+// 设置其他值...
+// 强制写入，默认情况是系统延迟写入
+[ud synchronize];
+```
+
