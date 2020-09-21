@@ -456,6 +456,12 @@ label.layer.masksToBounds = YES;
     [self presentViewController:alert animated:YES completion:nil];
 }
 
+// 进入编辑模式，让列表可以从右向左滑动，点击的时候回调
+- (void)tableView:(UITableView *)tableView commitEditingStyle:(UITableViewCellEditingStyle)editingStyle forRowAtIndexPath:(NSIndexPath *)indexPath {
+    // 更新数据源
+  	// 然后执行 deleteRowsAtIndexPaths 方法删除某行数据，这样才有动画效果
+}
+
 
 @end
 ```
@@ -819,11 +825,16 @@ application.applicationIconBadgeNumber = 10;
 4. 返回控制器也是使用 `NavigaionController` ，参考以下代码。
 
 ```objc
-// 返回到上一个控制器
+// 返回到上一个控制器，跳转方式为 show 的时候调用
 [self.navigationController popViewControllerAnimated:YES];
 // 返回到指定控制器
 NSArray *arr = self.navigationController.viewControllers;
 [self.navigationController popToViewController:arr[0] animated:YES];
+
+// 跳转方式为 present modally 的时候调用
+[self dismissViewControllerAnimated:YES completion:^{
+    NSLog(@"已经关闭");
+}];
 ```
 
 ### 25.1 自定义导航栏
@@ -949,5 +960,207 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
 // 设置其他值...
 // 强制写入，默认情况是系统延迟写入
 [ud synchronize];
+```
+
+## 29. 画图
+
+三个步骤：
+
+1. 获取绘图对象；
+2. 设置路径、样式等；
+3. 渲染。
+
+简单示例：
+
+```objc
+#import "MHView.h"
+
+@implementation MHView
+
+
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+    [self way_5];
+//    [self way_4];
+//    [self way_3];
+//    [self way_2];
+//    [self way_1];
+    
+}
+
+// OC 比较简单，用得比较多
+- (void) way_5 {
+    UIBezierPath * path = [[UIBezierPath alloc]init];
+    [path moveToPoint:CGPointMake(50, 50)];
+    [path addLineToPoint:CGPointMake(100, 100)];
+    [path addLineToPoint:CGPointMake(200, 100)];
+    // 渲染
+    [path stroke];
+}
+
+// C + OC path转化
+- (void) way_4 {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // 使用path对象封装路径
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, NULL, 50, 50);
+    CGPathAddLineToPoint(path, NULL, 100, 100);
+
+    // 转化成OC的path
+    UIBezierPath *bezierPath = [UIBezierPath bezierPathWithCGPath:path];
+    [bezierPath addLineToPoint:CGPointMake(150, 50)];
+
+    // 只要添加最后的path
+    CGContextAddPath(context, bezierPath.CGPath);
+
+    CGContextStrokePath(context);
+}
+
+// C + OC
+- (void) way_3 {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // UIBezierPath 是OC对象
+    UIBezierPath * path = [[UIBezierPath alloc]init];
+    [path moveToPoint:CGPointMake(50, 50)];
+    [path addLineToPoint:CGPointMake(100, 100)];
+    // 转化为C对象
+    CGContextAddPath(context, path.CGPath);
+    
+    CGContextStrokePath(context);
+}
+
+// C语言
+- (void) way_2 {
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // 使用path对象封装路径
+    CGMutablePathRef path = CGPathCreateMutable();
+    CGPathMoveToPoint(path, NULL, 50, 50);
+    CGPathAddLineToPoint(path, NULL, 100, 100);
+    CGContextAddPath(context, path);
+    
+    CGContextStrokePath(context);
+}
+
+// C语言
+- (void) way_1 {
+    // 1.获取绘图对象
+    CGContextRef context = UIGraphicsGetCurrentContext();
+    // 2.拼接路径
+    CGContextMoveToPoint(context, 50, 50); // 设置起点
+    CGContextAddLineToPoint(context, 100, 100); // 设置终点1 画一条线
+    CGContextAddLineToPoint(context, 100, 200); // 设置终点2
+    // 3.渲染
+    CGContextStrokePath(context);
+}
+
+@end
+```
+
+画简单图形。
+
+```objc
+//
+//  MHView.m
+//  Autolayout
+//
+//  Created by dyb on 2020/9/11.
+//  Copyright © 2020 ren. All rights reserved.
+//
+
+#import "MHView.h"
+
+@implementation MHView
+
+
+// Only override drawRect: if you perform custom drawing.
+// An empty implementation adversely affects performance during animation.
+- (void)drawRect:(CGRect)rect {
+    // Drawing code
+//    [self rect];
+//    [self roundedRect];
+//    [self oval];
+//    [self arc];
+    [self setStyle];
+}
+
+// 设置样式
+- (void) setStyle {
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    // 线宽
+    CGContextSetLineWidth(ctx, 5);
+    /** 转角（线连接处）样式
+     * kCGLineJoinMiter, 默认
+       kCGLineJoinRound, 圆角
+       kCGLineJoinBevel, 斜角
+     */
+    CGContextSetLineJoin(ctx, kCGLineJoinBevel);
+
+    /**
+     * 头尾的样式
+     * kCGLineCapButt,  默认
+       kCGLineCapRound, 圆形
+       kCGLineCapSquare,方形，比默认要长一点
+     */
+    CGContextSetLineCap(ctx, kCGLineCapRound);
+    //位置
+    CGContextMoveToPoint(ctx, 20, 20);
+    CGContextAddLineToPoint(ctx, 20, 50);
+    CGContextAddLineToPoint(ctx, 50, 50);
+    // 关闭路径
+    CGContextClosePath(ctx);
+    // 设置描边颜色
+    CGContextSetRGBStrokeColor(ctx, 0.5, 0.5, 0.5, 1);
+    // 描边
+//    CGContextStrokePath(ctx);
+    // 设置填充颜色
+    CGContextSetRGBFillColor(ctx, 0.5, 0.6, 0.7, 1);
+    // 填充
+//    CGContextFillPath(ctx);
+    // 既填充又描边
+    CGContextDrawPath(ctx, kCGPathFillStroke);
+}
+
+// 圆弧
+- (void) arc {
+    // OC
+    // 起始位置为3点钟，PI为九点钟位置，可以参考y=sin(x)方程图像
+    // 整个圆则是2PI
+    // clockwise : 是否顺时针，值不同则显示为上半圆或者下半圆
+    UIBezierPath *path = [UIBezierPath bezierPathWithArcCenter:CGPointMake(80, 100) radius:50 startAngle:0 endAngle:M_PI clockwise:YES];
+    [path stroke];
+
+    // C
+    // 顺时针与OC是反的
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextAddArc(ctx, 200, 100, 50, 0, M_PI, YES);
+    CGContextStrokePath(ctx);
+}
+
+// 椭圆,如果宽高一致则是圆
+-(void) oval {
+    // OC
+    UIBezierPath *path = [UIBezierPath bezierPathWithOvalInRect:CGRectMake(180, 20, 100, 150)];
+    [path stroke];
+    // C，两者叫法不同
+    CGContextRef ctx = UIGraphicsGetCurrentContext();
+    CGContextAddEllipseInRect(ctx, CGRectMake(20, 20, 150, 100));
+    CGContextStrokePath(ctx);
+}
+
+// 圆角矩形
+-(void) roundedRect {
+    UIBezierPath *path = [UIBezierPath bezierPathWithRoundedRect:CGRectMake(20, 20, 100, 100) cornerRadius:30];
+    [path stroke];
+}
+
+// 矩形
+- (void) rect {
+    UIBezierPath *path = [UIBezierPath bezierPathWithRect:CGRectMake(20, 20, 100, 100)];
+    [path stroke];
+}
+
+@end
 ```
 
