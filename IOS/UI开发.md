@@ -1118,8 +1118,7 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
     CGContextSetRGBFillColor(ctx, 0.5, 0.6, 0.7, 1);
     // 填充
 //    CGContextFillPath(ctx);
-    // 既填充又描边
-    CGContextDrawPath(ctx, kCGPathFillStroke);
+    
 }
 
 // 圆弧
