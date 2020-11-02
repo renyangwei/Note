@@ -970,6 +970,8 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
 2. 设置路径、样式等；
 3. 渲染。
 
+有一下五种方法，基本上都是C、OC或者混合使用。
+
 简单示例：
 
 ```objc
@@ -1163,3 +1165,24 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
 @end
 ```
 
+```objc
+- (void)drawRect:(CGRect)rect {
+    // 柱状图
+    NSArray *arr = @[@0.1, @0.4, @0.2, @0.2, @0.1];
+    for (int i=0; i < arr.count; ++i) {
+        CGFloat w = 20;
+        CGFloat h = [arr[i] floatValue] * rect.size.height;
+        CGFloat x = i * 2 * w;
+        CGFloat y = rect.size.height - h;
+        UIBezierPath * path = [UIBezierPath bezierPathWithRect:CGRectMake(x, y, w, h)];
+        [[UIColor colorNamed:@"red"] set];
+        [path fill];
+    }
+}
+```
+
+### 29.1 总结
+
+1.为什么代码要写在 `drawrect` 里面
+
+因为只有在这个方法才能获取正确上下文
