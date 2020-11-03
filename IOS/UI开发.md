@@ -1186,3 +1186,32 @@ NSUserDefaults *ud = [NSUserDefaults standardUserDefaults];  // 单例
 1.为什么代码要写在 `drawrect` 里面
 
 因为只有在这个方法才能获取正确上下文
+
+## 30. 圆形裁剪
+
+```objc
+- (void)drawRect:(CGRect)rect {
+    UIImage *image = [UIImage imageNamed:@"mg"];
+    CGContextRef ctx= UIGraphicsGetCurrentContext();
+    CGContextAddArc(ctx, 100, 100, 100, 0, 2*M_PI, YES);
+    CGContextClip(ctx);
+    [image drawInRect:rect];
+}
+```
+
+## 31.保存到相册
+
+```objc
+- (void)drawRect:(CGRect)rect {
+    UIImage *image = [UIImage imageNamed:@"mg"];
+    CGContextRef ctx= UIGraphicsGetCurrentContext();
+    CGContextAddArc(ctx, 100, 100, 100, 0, 2*M_PI, YES);
+    CGContextClip(ctx);
+    [image drawInRect:rect];
+    UIImageWriteToSavedPhotosAlbum(image, self, @selector(done), NULL);
+}
+
+- (void) done {
+    NSLog(@"保存完成");
+}
+```
