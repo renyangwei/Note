@@ -279,18 +279,18 @@ fi
 v1="ren"
 v2=$USER
 v3="renyangwei"
-if [ $v1 == $v2 ];then
+if [[ $v1 == $v2 ]];then
     echo "$v1 == $v2"
 else
     echo "$v1 != $v2"
 fi
 
-if [ $v2 == $v3 ];then
+if [[ $v2 == $v3 ]];then
     echo "$v2 == $v3"
 fi
 ```
 
-> 比较相等时会区分大小写
+> 比较相等时会区分大小写，需要增加一对大括号。
 
 2.字符串顺序
 
