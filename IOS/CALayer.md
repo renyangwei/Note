@@ -88,5 +88,21 @@ view.layer.contents = (__bridge id _Nullable)([UIImageimageNamed:@"mg"].CGImage)
     // 表示旋转到某个位置
     self.view.layer.affineTransform = CGAffineTransformMakeRotation(time * angle);
 }
+```
 
+## CADisplayLink
+
+是一种以屏幕刷新频率触发的时钟机制，每秒钟执行大约60次左右。
+
+```objc
+// timeChange 函数每秒会执行大约60次
+CADisplayLink * link = [CADisplayLink displayLinkWithTarget:self selector:@selector(timeChange)];
+// 添加到主循环中
+[link addToRunLoop:[NSRunLoop mainRunLoop] forMode:NSDefaultRunLoopMode];
+```
+
+```objc
+NSDate * date = [NSDate date];
+NSCalendar * cal = [NSCalendar currentCalendar];
+CGFloat time = [cal component:NSCalendarUnitSecond fromDate:date];
 ```
