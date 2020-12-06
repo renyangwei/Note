@@ -265,3 +265,5 @@ afterEvaluate {
 ```
 
 点击IDEA右侧的Gradle边栏，执行publishing中的任务即可。
+
+参考 [官网使用 Maven Publish 插件](https://developer.android.google.cn/studio/build/maven-publish-plugin?hl=zh_cn) 。
