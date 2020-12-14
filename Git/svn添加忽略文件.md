@@ -43,3 +43,9 @@ local.properties
 ```
 
 我们可以将配置保存成两个文件 `AndroidStudioIgnore` 和 `EclipseIgnore` 文件，下次直接导入。
+
+## 添加全局忽略
+
+就不用每个工程配置了。
+
+找到 *C:\Users\Administrator\AppData\Roaming\Subversion\config* 文件，搜索 **global-ignores**，就是全局忽略配置。
