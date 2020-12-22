@@ -40,3 +40,25 @@ Java方法执行的动态内存模型。执行每个方法都会创建一个栈�
 如果栈没有限制大小，则会报 **OutOfMemery** (内存溢出) 。
 
 栈的大小可以自己设定，默认只有几百KB，比如128KB。
+
+### Java堆
+
+存放对象实例
+
+### 方法区
+
+存储加载的类信息，常量，静态变量，即时编译器编译后的代码等数据。
+
+举例：
+
+```java
+String a = "abc";
+String b = "abc";
+// true，在常量池中，不会重复
+System.out.print(a == b);
+String c = new String("abc");
+System.out.println();
+// false，在堆中新开辟了一块内存空间
+System.out.print(a == c);
+```
+
