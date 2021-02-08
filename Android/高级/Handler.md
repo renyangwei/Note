@@ -30,3 +30,45 @@
 
 ## 基本用法
 
+```java
+/**
+ * 传统模式下载
+ */
+private void downloadPic() {
+    // 开启线程
+    new Thread(() -> {
+        try {
+            Bitmap bitmap = downloadBitmap(path);
+            // 返回给主线程
+            Message message = handler.obtainMessage();
+            message.obj = bitmap;
+            handler.sendMessage(message);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }).start();
+}
+
+private Bitmap downloadBitmap(String path) throws IOException {
+    URL url = new URL(path);
+    URLConnection connection = url.openConnection();
+    HttpURLConnection httpURLConnection = (HttpURLConnection) connection;
+    int code = httpURLConnection.getResponseCode();
+    if (code == HttpURLConnection.HTTP_OK) {
+        return BitmapFactory.decodeStream(httpURLConnection.getInputStream());
+    }
+    return null;
+}
+
+
+private Handler handler = new Handler(new Handler.Callback() {
+    @Override
+    public boolean handleMessage(@NonNull Message msg) {
+        Log.d(MTAG, "handleMessage:");
+        Bitmap bitmap = (Bitmap) msg.obj;
+        imageView.setImageBitmap(bitmap);
+        return false;
+    }
+});
+```
+
